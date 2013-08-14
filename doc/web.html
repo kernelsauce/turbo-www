@@ -1,0 +1,704 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>turbo.web – Core web framework &mdash; Turbo.lua 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Turbo.lua 1.0.0 documentation" href="index.html" />
+    <link rel="next" title="turbo.async – Asynchronous clients" href="async.html" />
+    <link rel="prev" title="Turbo.lua API Versioning" href="apiref.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="async.html" title="turbo.async – Asynchronous clients"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="apiref.html" title="Turbo.lua API Versioning"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Turbo.lua 1.0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="turbo-web-core-web-framework">
+<span id="web"></span><h1>turbo.web &#8211; Core web framework<a class="headerlink" href="#turbo-web-core-web-framework" title="Permalink to this headline">¶</a></h1>
+<p>The Turbo.lua Web framework is modeled after the framework offered by
+Tornado (<a class="reference external" href="http://www.tornadoweb.org/">http://www.tornadoweb.org/</a>), which again is based on web.py (<a class="reference external" href="http://webpy.org/">http://webpy.org/</a>) and
+Google&#8217;s webapp (<a class="reference external" href="http://code.google.com/appengine/docs/python/tools/webapp/">http://code.google.com/appengine/docs/python/tools/webapp/</a>)
+Some modifications has been made to make it fit better into the Lua
+eco system. The web framework utilizes asynchronous features that allow it
+to scale to large numbers of open connections (thousands). The framework support
+comet polling.</p>
+<p>Create a web server that listens to port 8888 and prints the canoncial Hello world on
+a GET request is very easy:</p>
+<div class="highlight-lua"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre>     <span class="kd">local</span> <span class="n">turbo</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="s1">&#39;</span><span class="s">turbo&#39;</span><span class="p">)</span>
+
+     <span class="kd">local</span> <span class="n">ExampleHandler</span> <span class="o">=</span> <span class="n">class</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">ExampleHandler&quot;</span><span class="p">,</span> <span class="n">turbo</span><span class="p">.</span><span class="n">web</span><span class="p">.</span><span class="n">RequestHandler</span><span class="p">)</span>
+     <span class="k">function</span> <span class="nf">ExampleHandler</span><span class="p">:</span><span class="n">get</span><span class="p">()</span>
+             <span class="n">self</span><span class="p">:</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">Hello world!&quot;</span><span class="p">)</span>
+     <span class="k">end</span>
+
+     <span class="kd">local</span> <span class="n">application</span> <span class="o">=</span> <span class="n">turbo</span><span class="p">.</span><span class="n">web</span><span class="p">.</span><span class="n">Application</span><span class="p">({</span>
+             <span class="p">{</span><span class="s2">&quot;</span><span class="s">/$&quot;</span><span class="p">,</span> <span class="n">ExampleHandler</span><span class="p">}</span>
+     <span class="p">})</span>
+     <span class="n">application</span><span class="p">:</span><span class="n">listen</span><span class="p">(</span><span class="mi">8888</span><span class="p">)</span>
+     <span class="n">turbo</span><span class="p">.</span><span class="n">ioloop</span><span class="p">.</span><span class="n">instance</span><span class="p">():</span><span class="n">start</span><span class="p">()</span>
+</pre></div>
+</td></tr></table></div>
+<div class="section" id="requesthandler-class">
+<h2>RequestHandler class<a class="headerlink" href="#requesthandler-class" title="Permalink to this headline">¶</a></h2>
+<p>Base RequestHandler class. The heart of Turbo.lua.
+The usual flow of using Turbo.lua is sub-classing the RequestHandler
+class and implementing the HTTP request methods described in
+self.SUPPORTED_METHODS. The main goal of this class is to wrap a HTTP
+request and offer utilities to respond to the request. Requests are
+deligated to RequestHandler&#8217;s by the Application class.
+The RequestHandler class are implemented so that it should be subclassed to process HTTP requests.</p>
+<p>It is possible to modify self.SUPPORT_METHODS to add support for more methods if that is wanted.</p>
+<div class="section" id="entry-points">
+<h3>Entry points<a class="headerlink" href="#entry-points" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt>
+<tt class="descname">RequestHandler:on_create(kwargs)</tt></dt>
+<dd><p>Redefine this method if you want to do something straight after the class
+has been initialized. This is called after a request has been
+recieved, and before the HTTP method has been verified against supported
+methods. So if a not supported method is requested, this method is still
+called.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs</strong> (<em>Table</em>) &#8211; The keyword arguments that you initialize the class with.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">RequestHandler:prepare()</tt></dt>
+<dd><p>Redefine this method if you want to do something after the class has been
+initialized. This method unlike on_create, is only called if the method has
+been found to be supported.</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">RequestHandler:on_finish()</tt></dt>
+<dd><p>Called after the end of a request. Useful for e.g a cleanup routine.</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">RequestHandler:set_default_headers()</tt></dt>
+<dd><p>Redefine this method to set HTTP headers at the beginning of all the
+request recieved by the RequestHandler. For example setting some kind
+of cookie or adjusting the Server key in the headers would be sensible
+to do in this method.</p>
+</dd></dl>
+
+<p><em>Subclass RequestHandler and implement any of the following methods to handle
+the corresponding HTTP request.
+If not implemented they will provide a 405 (Method Not Allowed).
+These methods recieve variable arguments, depending on what the Application
+instance calling them has captured from the pattern matching of the request
+URL. The methods are run protected, so they are error safe. When a error
+occurs in the execution of these methods the request is given a
+500 Internal Server Error response. In debug mode, the stack trace leading
+to the crash is also a part of the response. If not debug mode is set, then
+only the status code is set.</em></p>
+<dl class="function">
+<dt>
+<tt class="descname">RequestHandler:get(...)</tt></dt>
+<dd><p>HTTP GET reqests handler.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>...</strong> &#8211; Parameters from matched URL pattern with braces. E.g /users/(.*)$ would provide anything after /users/ as first parameter.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">RequestHandler:post(...)</tt></dt>
+<dd><p>HTTP POST reqests handler.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>...</strong> &#8211; Parameters from matched URL pattern with braces.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">RequestHandler:head(...)</tt></dt>
+<dd><p>HTTP HEAD reqests handler.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>...</strong> &#8211; Parameters from matched URL pattern with braces.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">RequestHandler:delete(...)</tt></dt>
+<dd><p>HTTP DELETE reqests handler.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>...</strong> &#8211; Parameters from matched URL pattern with braces.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">RequestHandler:put(...)</tt></dt>
+<dd><p>HTTP PUT reqests handler.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>...</strong> &#8211; Parameters from matched URL pattern with braces.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">RequestHandler:options(...)</tt></dt>
+<dd><p>HTTP OPTIONS reqests handler.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>...</strong> &#8211; Parameters from matched URL pattern with braces.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="input">
+<h3>Input<a class="headerlink" href="#input" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt>
+<tt class="descname">RequestHandler:get_argument(name, default, strip)</tt></dt>
+<dd><p>Returns the value of the argument with the given name.
+If default value is not given the argument is considered to be required and
+will result in a raise of a HTTPError 400 Bad Request if the argument does
+not exist.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> (<em>String</em>) &#8211; Name of the argument to get.</li>
+<li><strong>default</strong> (<em>String</em>) &#8211; Optional fallback value in case argument is not set.</li>
+<li><strong>strip</strong> (<em>Boolean</em>) &#8211; Remove whitespace from head and tail of string.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">String</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">RequestHandler:get_arguments(name, strip)</tt></dt>
+<dd><p>Returns the values of the argument with the given name. Should be used when you expect multiple arguments values with same name. Strip will take away whitespaces at head and tail where                applicable. Returns a empty table if argument does not exist.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> (<em>String</em>) &#8211; Name of the argument to get.</li>
+<li><strong>strip</strong> (<em>Boolean</em>) &#8211; Remove whitespace from head and tail of string.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Table</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">RequestHandler.request:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><tt class="docutils literal"><span class="pre">turbo.httpserver.HTTPRequest</span></tt> class instance for this request. This object contains e.g <tt class="docutils literal"><span class="pre">turbo.httputil.HTTPHeader</span></tt> and the body payload etc. See the documentation for the classes for more details.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="output">
+<h3>Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt>
+<tt class="descname">RequestHandler:write(chunk)</tt></dt>
+<dd><p>Writes the given chunk to the output buffer.
+To write the output to the network, call the <tt class="docutils literal"><span class="pre">turbo.web.RequestHandler:flush()</span></tt> method.
+If the given chunk is a Lua table, it will be automatically
+stringifed to JSON.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>chunk</strong> (<em>String</em>) &#8211; Data chunk to write to underlying connection.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">RequestHandler:finish(chunk)</tt></dt>
+<dd><p>Finishes the HTTP request. This method can only be called once for each
+request. This method flushes all data in the write buffer.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>chunk</strong> (<em>String</em>) &#8211; Final data to write to stream before finishing.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">RequestHandler:flush(callback)</tt></dt>
+<dd><p>Flushes the current output buffer to the IO stream.</p>
+<p>If callback is given it will be run when the buffer has
+been written to the socket. Note that only one callback flush
+callback can be present per request. Giving a new callback
+before the pending has been run leads to discarding of the
+current pending callback. For HEAD method request the chunk
+is ignored and only headers are written to the socket.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>callback</strong> (<em>Function</em>) &#8211; Function to call after the buffer has been flushed.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">RequestHandler:clear()</tt></dt>
+<dd><p>Reset all headers, empty write buffer in a request.</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">RequestHandler:add_header(name, value)</tt></dt>
+<dd><p>Add the given name and value pair to the HTTP response headers.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> (<em>String</em>) &#8211; Key string for header field.</li>
+<li><strong>value</strong> (<em>String</em>) &#8211; Value for header field.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">RequestHandler:set_header(name, value)</tt></dt>
+<dd><p>Set the given name and value pair of the HTTP response headers. If name exists then the value is overwritten.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> (<em>String</em>) &#8211; Key string for header field.</li>
+<li><strong>value</strong> (<em>String</em>) &#8211; Value for header field.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">RequestHandler:get_header(name)</tt></dt>
+<dd><p>Returns the current value of the given name in the HTTP response headers. Returns nil if not set.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<em>String</em>) &#8211; Name of value to get.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">String or nil</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">RequestHandler:set_status(code)</tt></dt>
+<dd><p>Set the status code of the HTTP response headers. Must be number or error is raised.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>code</strong> (<em>Number</em>) &#8211; HTTP status code to set.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">RequestHandler:get_status()</tt></dt>
+<dd><p>Get the curent status code of the HTTP response headers.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Number</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">RequestHandler:redirect(url, permanent)</tt></dt>
+<dd><p>Redirect client to another URL. Sets headers and finish request. User can not send data after this.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>url</strong> (<em>String</em>) &#8211; The URL to redirect to.</li>
+<li><strong>permanent</strong> (<em>Boolean</em>) &#8211; Flag this as a permanent redirect or temporary.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="misc">
+<h3>Misc<a class="headerlink" href="#misc" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt>
+<tt class="descname">RequestHandler:set_async(bool)</tt></dt>
+<dd><p>Set handler to not call finish() when request method has been called and
+returned. Default is false. When set to true, the user must explicitly call
+finish.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>bool</strong> (<em>Boolean</em>) &#8211; </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="httperror-class">
+<h2>HTTPError class<a class="headerlink" href="#httperror-class" title="Permalink to this headline">¶</a></h2>
+<p>This error is raisable from RequestHandler instances. It provides a
+convinent and safe way to handle errors in handlers. E.g it is allowed to
+do this:</p>
+<div class="highlight-lua"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre>     <span class="k">function</span> <span class="nf">MyHandler</span><span class="p">:</span><span class="n">get</span><span class="p">()</span>
+         <span class="kd">local</span> <span class="n">item</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">get_argument</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">item&quot;</span><span class="p">)</span>
+          <span class="k">if</span> <span class="ow">not</span> <span class="n">find_in_store</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">then</span>
+              <span class="nb">error</span><span class="p">(</span><span class="n">turbo</span><span class="p">.</span><span class="n">web</span><span class="p">.</span><span class="n">HTTPError</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s">Could not find item in store&quot;</span><span class="p">))</span>
+          <span class="k">end</span>
+          <span class="o">...</span>
+     <span class="k">end</span>
+</pre></div>
+</td></tr></table></div>
+<p>The result is that the status code is set to 400 and the message is sent as
+the body of the request. The request is always finished on error.</p>
+<dl class="function">
+<dt id="HTTPError">
+<tt class="descname">HTTPError</tt><big>(</big><em>code</em>, <em>message</em><big>)</big><a class="headerlink" href="#HTTPError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new HTTPError class instance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>code</strong> (<em>Number</em>) &#8211; The HTTP status code to send to send to client.</li>
+<li><strong>message</strong> (<em>String</em>) &#8211; Optional message to pass as body in the response.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="staticfilehandler-class">
+<h2>StaticFileHandler class<a class="headerlink" href="#staticfilehandler-class" title="Permalink to this headline">¶</a></h2>
+<p>A simple static file handler. All files are cached in memory after initial request.
+If you are planning to serve big files, then it is recommended to use a
+proper static file web server instead. For small files that can be kept
+in memory it is ok.</p>
+<p>Usage:</p>
+<div class="highlight-lua"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre>     <span class="kd">local</span> <span class="n">application</span> <span class="o">=</span> <span class="n">turbo</span><span class="p">.</span><span class="n">web</span><span class="p">.</span><span class="n">Application</span><span class="p">({</span>
+             <span class="p">{</span><span class="s2">&quot;</span><span class="s">/static/(.*)$&quot;</span><span class="p">,</span> <span class="n">turbo</span><span class="p">.</span><span class="n">web</span><span class="p">.</span><span class="n">StaticFileHandler</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s">/var/www/&quot;</span><span class="p">},</span>
+     <span class="p">})</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="application-class">
+<h2>Application class<a class="headerlink" href="#application-class" title="Permalink to this headline">¶</a></h2>
+<p>The Application class is a collection of request handler classes that make together up a web application. Example:</p>
+<div class="highlight-lua"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre>     <span class="kd">local</span> <span class="n">application</span> <span class="o">=</span> <span class="n">turbo</span><span class="p">.</span><span class="n">web</span><span class="p">.</span><span class="n">Application</span><span class="p">({</span>
+             <span class="p">{</span><span class="s2">&quot;</span><span class="s">/static/(.*)$&quot;</span><span class="p">,</span> <span class="n">turbo</span><span class="p">.</span><span class="n">web</span><span class="p">.</span><span class="n">StaticFileHandler</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s">/var/www/&quot;</span><span class="p">},</span>
+             <span class="p">{</span><span class="s2">&quot;</span><span class="s">/$&quot;</span><span class="p">,</span> <span class="n">ExampleHandler</span><span class="p">},</span>
+             <span class="p">{</span><span class="s2">&quot;</span><span class="s">/item/(%d*)&quot;</span><span class="p">,</span> <span class="n">ItemHandler</span><span class="p">}</span>
+     <span class="p">})</span>
+</pre></div>
+</td></tr></table></div>
+<p>The constructor of this class takes a &#8220;map&#8221; of URL patterns and their respective handlers. The third element in the table are optional parameters the handler class might have.
+E.g the <tt class="docutils literal"><span class="pre">turbo.web.StaticFileHandler</span></tt> class takes the root path for your static handler. This element could also be another table for multiple arguments.</p>
+<p>The first element in the table is the URL that the application class matches incoming request with to determine how to serve it. These URLs simply be a URL or a any kind of Lua pattern.</p>
+<p>The ItemHandler URL pattern is an example on how to map numbers from URL to your handlers. Pattern encased in parantheses are used as parameters when calling the request methods in your handlers.</p>
+<p><em>Note: Patterns are matched in a sequential manner. If a request matches multiple
+handler pattern&#8217;s only the first handler matched is delegated the request. Therefore, it is important to write good patterns.</em></p>
+<p>A good read on Lua patterns matching can be found here: <a class="reference external" href="http://www.wowwiki.com/Pattern_matching">http://www.wowwiki.com/Pattern_matching</a>.</p>
+<dl class="function">
+<dt id="Application">
+<tt class="descname">Application</tt><big>(</big><em>handlers</em>, <em>default_host</em><big>)</big><a class="headerlink" href="#Application" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize a new Application class instance.
+:param handlers: As described above. Table of tables with pattern to handler binding.
+:type handlers: Table
+:param default_host: Redirect to URL if no matching handler is found.
+:type default_host: String</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">Application:add_handler(pattern, handler, arg)</tt></dt>
+<dd><p>Add handler to Application.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>pattern</strong> (<em>String</em>) &#8211; Lua pattern string.</li>
+<li><strong>handler</strong> (<em>RequestHandler based class</em>) &#8211; </li>
+<li><strong>arg</strong> &#8211; Argument for handler.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">Application:listen(port, address, kwargs)</tt></dt>
+<dd><p>Starts an HTTP server for this application on the given port.
+This is really just a convinence method. The same effect can be achieved
+by creating a <tt class="docutils literal"><span class="pre">turbo.httpserver.HTTPServer</span></tt> class instance and assigning the Application instance to its request_callback parameter and calling its listen()
+method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>port</strong> (<em>Number</em>) &#8211; TCP port to bind server to.</li>
+<li><strong>address</strong> (<em>Number</em>) &#8211; Optional address to bind server to. Use <tt class="docutils literal"><span class="pre">turbo.socket.htonl()</span></tt> to create address. We use the unsigned integer hostlong format of the IP.</li>
+<li><strong>kwargs</strong> (<em>Table</em>) &#8211; Keyword arguments</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Available keyword arguments:</p>
+<ul class="simple">
+<li>&#8220;key_file&#8221; (String) - Path to SSL key file if a SSL enabled server is wanted.</li>
+<li>&#8220;cert_file&#8221; (String) - Path to certificate file. key_file must also be set.</li>
+</ul>
+</dd></dl>
+
+<p><em>Note: If you are going to use SSL the global _G.TURBO_SSL must be set to true!</em></p>
+<dl class="function">
+<dt>
+<tt class="descname">Application:set_server_name(name)</tt></dt>
+<dd><p>Sets the name of the server. Used in the response headers.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<em>String</em>) &#8211; The name used in HTTP responses. Default is &#8220;Turbo vx.x&#8221;</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">Application:get_server_name()</tt></dt>
+<dd><p>Gets the current name of the server.
+:rtype: String</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">turbo.web &#8211; Core web framework</a><ul>
+<li><a class="reference internal" href="#requesthandler-class">RequestHandler class</a><ul>
+<li><a class="reference internal" href="#entry-points">Entry points</a></li>
+<li><a class="reference internal" href="#input">Input</a></li>
+<li><a class="reference internal" href="#output">Output</a></li>
+<li><a class="reference internal" href="#misc">Misc</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#httperror-class">HTTPError class</a></li>
+<li><a class="reference internal" href="#staticfilehandler-class">StaticFileHandler class</a></li>
+<li><a class="reference internal" href="#application-class">Application class</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="apiref.html"
+                        title="previous chapter">Turbo.lua API Versioning</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="async.html"
+                        title="next chapter">turbo.async &#8211; Asynchronous clients</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/web.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="async.html" title="turbo.async – Asynchronous clients"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="apiref.html" title="Turbo.lua API Versioning"
+             >previous</a> |</li>
+        <li><a href="index.html">Turbo.lua 1.0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, John Abrahamsen.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

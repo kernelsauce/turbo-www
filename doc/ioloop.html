@@ -1,0 +1,356 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>turbo.ioloop – Main I/O Loop &mdash; Turbo.lua 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Turbo.lua 1.0.0 documentation" href="index.html" />
+    <link rel="next" title="turbo.iostream – High-level asynchronous streaming sockets" href="iostream.html" />
+    <link rel="prev" title="turbo.async – Asynchronous clients" href="async.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="iostream.html" title="turbo.iostream – High-level asynchronous streaming sockets"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="async.html" title="turbo.async – Asynchronous clients"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Turbo.lua 1.0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="turbo-ioloop-main-i-o-loop">
+<span id="ioloop"></span><h1>turbo.ioloop &#8211; Main I/O Loop<a class="headerlink" href="#turbo-ioloop-main-i-o-loop" title="Permalink to this headline">¶</a></h1>
+<p>Single threaded I/O event loop implementation. The module handles socket
+events and timeouts and scheduled intervals with millisecond precision</p>
+<dl class="docutils">
+<dt>The inner working are as follows:</dt>
+<dd><ul class="first last simple">
+<li>Set iteration timeout to 3600 milliseconds.</li>
+<li>If there exists any timeout callbacks, check if they are scheduled to be run. Run them if they are. If timeout callback would be delayed because of too long iteration timeout, the timeout is adjusted.</li>
+<li>If there exists any interval callbacks, check if they are scheduled to be run. If interval callback would be missed because of too long iteration timeout, the iteration timeout is adjusted.</li>
+<li>If any callbacks exists, run them. If callbacks add new callbacks, adjust the iteration timeout to 0.</li>
+<li>If there are any events for sockets file descriptors, run their respective handlers. Else wait for specified interval timeout, or any socket events, jump back to start.</li>
+</ul>
+</dd>
+</dl>
+<p>Note that because of the fact that the server itself does not know if callbacks block or have a long processing time it cannot guarantee that timeouts and intervals are called on time.
+In a perfect world they would be called within a reasonable time of what is specified.</p>
+<dl class="docutils">
+<dt>Event types for file descriptors are defined in the ioloop module&#8217;s namespace:</dt>
+<dd><tt class="docutils literal"><span class="pre">turbo.ioloop.READ</span></tt>, <tt class="docutils literal"><span class="pre">turbo.ioloop.WRITE</span></tt>, <tt class="docutils literal"><span class="pre">turbo.ioloop.PRI</span></tt>, <tt class="docutils literal"><span class="pre">turbo.ioloop.ERROR</span></tt></dd>
+</dl>
+<dl class="function">
+<dt id="ioloop.instance">
+<tt class="descclassname">ioloop.</tt><tt class="descname">instance</tt><big>(</big><big>)</big><a class="headerlink" href="#ioloop.instance" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Create or get the global IOLoop instance.</dt>
+<dd>Multiple calls to this function returns the same IOLoop.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">IOLoop class.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<div class="section" id="ioloop-class">
+<h2>IOLoop class<a class="headerlink" href="#ioloop-class" title="Permalink to this headline">¶</a></h2>
+<p>IOLoop is a level triggered I/O loop, with additional support for timeout
+and time interval callbacks. Heavily influenced by ioloop.py in the Tornado web framework.
+<em>Note: Only one instance of IOLoop can ever run at the same time!</em></p>
+<dl class="function">
+<dt id="IOLoop">
+<tt class="descname">IOLoop</tt><big>(</big><big>)</big><a class="headerlink" href="#IOLoop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new IOLoop class instance.</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">IOLoop:add_handler(fd, events, handler, arg)</tt></dt>
+<dd><p>Add handler function for given event mask on fd.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>fd</strong> (<em>Number</em>) &#8211; File descriptor to bind handler for.</li>
+<li><strong>events</strong> (<em>Number</em>) &#8211; Events bit mask. Defined in ioloop namespace. E.g <tt class="docutils literal"><span class="pre">turbo.ioloop.READ</span></tt> and <tt class="docutils literal"><span class="pre">turbo.ioloop.WRITE</span></tt>. Multiple bits can be AND&#8217;ed together.</li>
+<li><strong>handler</strong> (<em>Function</em>) &#8211; Handler function.</li>
+<li><strong>arg</strong> &#8211; Optional argument for function handler. Handler is called with this as first argument if set.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Boolean</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">IOLoop:update_handler(fd, events)</tt></dt>
+<dd><p>Update existing handler function&#8217;s trigger events.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>fd</strong> (<em>Number</em>) &#8211; File descriptor to update.</li>
+<li><strong>events</strong> (<em>Number</em>) &#8211; Events bit mask. Defined in ioloop namespace. E.g <tt class="docutils literal"><span class="pre">turbo.ioloop.READ</span></tt> and <tt class="docutils literal"><span class="pre">turbo.ioloop.WRITE</span></tt>. Multiple bits can be AND&#8217;ed together.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">IOLoop:remove_handler(fd)</tt></dt>
+<dd><p>Remove a existing handler from the IO Loop.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fd</strong> (<em>Number</em>) &#8211; File descriptor to remove handler from.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">IOLoop:add_callback(callback, arg)</tt></dt>
+<dd><p>Add a callback to be called on next iteration of the IO Loop.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>callback</strong> (<em>Function</em>) &#8211; A function to be called on next iteration.</li>
+<li><strong>arg</strong> &#8211; Optional argument for callback. Callback is called with this as first argument if set.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">IOLoop:list_callbacks()</tt></dt>
+<dd><p>Returns all current callbacks in the IO Loop.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Table</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">IOLoop:add_timeout(timestamp, func, arg)</tt></dt>
+<dd><p>Add a timeout with function to be called in future. There is given no gurantees that the function will be called
+on time. See the note at beginning of this section.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>timestamp</strong> (<em>Number</em>) &#8211; A timestamp in msec granularity. See <tt class="docutils literal"><span class="pre">turbo.util.gettimeofday()</span></tt>.</li>
+<li><strong>func</strong> (<em>Function</em>) &#8211; A function to be called after timestamp is reached.</li>
+<li><strong>arg</strong> &#8211; Optional argument for func.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Unique reference as a reference for this timeout. The reference can be used as parameter for <tt class="docutils literal"><span class="pre">IOLoop:remove_timeout()</span></tt></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">IOLoop:remove_timeout(ref)</tt></dt>
+<dd><p>Remove a scheduled timeout by using its reference.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>identifer</strong> (<em>Number</em>) &#8211; Identifier returned by <tt class="docutils literal"><span class="pre">IOLoop:add_timeout()</span></tt></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">Boolean</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">IOLoop:set_interval(msec, func, arg)</tt></dt>
+<dd><p>Add a function to be called every milliseconds. There is given no guarantees that the function will be called on time. See the note at beginning of this section.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>msec</strong> (<em>Number</em>) &#8211; Milliseconds interval.</li>
+<li><strong>func</strong> (<em>Function</em>) &#8211; A function to be called every msecs.</li>
+<li><strong>arg</strong> &#8211; Optional argument for func.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Unique numeric identifier as a reference to this interval. The refence can be used as parameter for <tt class="docutils literal"><span class="pre">IOLoop:clear_interval()</span></tt></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">IOLoop:clear_interval(ref)</tt></dt>
+<dd><p>Clear a interval.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ref</strong> (<em>Boolean</em>) &#8211; Reference returned by <tt class="docutils literal"><span class="pre">IOLoop:set_interval()</span></tt></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">IOLoop:start()</tt></dt>
+<dd><p>Start the IO Loop. The loop will continue running until <tt class="docutils literal"><span class="pre">IOLoop:stop</span></tt> is called via a callback added.</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">IOLoop:close()</tt></dt>
+<dd><p>Close the I/O loop. This call must be made from within the running I/O loop via a  callback, timeout, or interval. Notice: All pending callbacks and handlers are cleared upon close.</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">IOLoop:running()</tt></dt>
+<dd><p>Is the IO Loop running?</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Boolean</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">turbo.ioloop &#8211; Main I/O Loop</a><ul>
+<li><a class="reference internal" href="#ioloop-class">IOLoop class</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="async.html"
+                        title="previous chapter">turbo.async &#8211; Asynchronous clients</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="iostream.html"
+                        title="next chapter">turbo.iostream &#8211; High-level asynchronous streaming sockets</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/ioloop.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="iostream.html" title="turbo.iostream – High-level asynchronous streaming sockets"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="async.html" title="turbo.async – Asynchronous clients"
+             >previous</a> |</li>
+        <li><a href="index.html">Turbo.lua 1.0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, John Abrahamsen.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

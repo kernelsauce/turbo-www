@@ -1,0 +1,243 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>turbo.escape – Escaping and JSON utilities &mdash; Turbo.lua 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Turbo.lua 1.0.0 documentation" href="index.html" />
+    <link rel="next" title="turbo.log – Command-line log helper" href="log.html" />
+    <link rel="prev" title="turbo.sockutil – Socket utilites and helpers" href="sockutil.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="log.html" title="turbo.log – Command-line log helper"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="sockutil.html" title="turbo.sockutil – Socket utilites and helpers"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Turbo.lua 1.0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="turbo-escape-escaping-and-json-utilities">
+<span id="escape"></span><h1>turbo.escape &#8211; Escaping and JSON utilities<a class="headerlink" href="#turbo-escape-escaping-and-json-utilities" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="json-conversion">
+<h2>JSON conversion<a class="headerlink" href="#json-conversion" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="json_encode">
+<tt class="descname">json_encode</tt><big>(</big><em>lua_table_or_value</em><big>)</big><a class="headerlink" href="#json_encode" title="Permalink to this definition">¶</a></dt>
+<dd><p>JSON stringify a table. May raise a error if table could not be decoded.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>lua_table_or_value</strong> &#8211; Value to JSON encode.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">String</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="json_decode">
+<tt class="descname">json_decode</tt><big>(</big><em>json_string_literal</em><big>)</big><a class="headerlink" href="#json_decode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decode a JSON string to table.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>json_string_literal</strong> (<em>String</em>) &#8211; JSON enoded string to decode into Lua primitives.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">Table</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="escaping">
+<h2>Escaping<a class="headerlink" href="#escaping" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="unescape">
+<tt class="descname">unescape</tt><big>(</big><em>s</em><big>)</big><a class="headerlink" href="#unescape" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unescape a escaped hexadecimal representation string.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>s</strong> (<em>String</em>) &#8211; String to unescape.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">String</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">escape</tt><big>(</big><em>s</em><big>)</big></dt>
+<dd><p>Encodes a string into its escaped hexadecimal representation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>s</strong> (<em>String</em>) &#8211; String to escape.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">String</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="string-trimming">
+<h2>String trimming<a class="headerlink" href="#string-trimming" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="trim">
+<tt class="descname">trim</tt><big>(</big><em>s</em><big>)</big><a class="headerlink" href="#trim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove trailing and leading whitespace from string.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>s</strong> &#8211; String</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">String</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ltrim">
+<tt class="descname">ltrim</tt><big>(</big><em>s</em><big>)</big><a class="headerlink" href="#ltrim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove leading whitespace from string.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>s</strong> &#8211; String</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">String</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="rtrim">
+<tt class="descname">rtrim</tt><big>(</big><em>s</em><big>)</big><a class="headerlink" href="#rtrim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove trailing whitespace from string.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>s</strong> &#8211; String</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">String</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">turbo.escape &#8211; Escaping and JSON utilities</a><ul>
+<li><a class="reference internal" href="#json-conversion">JSON conversion</a></li>
+<li><a class="reference internal" href="#escaping">Escaping</a></li>
+<li><a class="reference internal" href="#string-trimming">String trimming</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="sockutil.html"
+                        title="previous chapter">turbo.sockutil &#8211; Socket utilites and helpers</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="log.html"
+                        title="next chapter">turbo.log &#8211; Command-line log helper</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/escape.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="log.html" title="turbo.log – Command-line log helper"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="sockutil.html" title="turbo.sockutil – Socket utilites and helpers"
+             >previous</a> |</li>
+        <li><a href="index.html">Turbo.lua 1.0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, John Abrahamsen.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

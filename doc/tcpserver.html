@@ -1,0 +1,254 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>turbo.tcpserver – Callback based TCP socket Server &mdash; Turbo.lua 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Turbo.lua 1.0.0 documentation" href="index.html" />
+    <link rel="next" title="turbo.structs – Data structures" href="structs.html" />
+    <link rel="prev" title="turbo.httpserver – Callback based HTTP Server" href="httpserver.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="structs.html" title="turbo.structs – Data structures"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="httpserver.html" title="turbo.httpserver – Callback based HTTP Server"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Turbo.lua 1.0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="turbo-tcpserver-callback-based-tcp-socket-server">
+<span id="tcpserver"></span><h1>turbo.tcpserver &#8211; Callback based TCP socket Server<a class="headerlink" href="#turbo-tcpserver-callback-based-tcp-socket-server" title="Permalink to this headline">¶</a></h1>
+<p>A simple non-blocking extensible TCP Server based on the IOStream class.
+Includes SSL support. Used as base for the Turbo HTTP Server.</p>
+<div class="section" id="tcpserver-class">
+<h2>TCPServer class<a class="headerlink" href="#tcpserver-class" title="Permalink to this headline">¶</a></h2>
+<p>A non-blocking TCP server class.
+Users which want to create a TCP server should inherit from this class and
+implement the TCPServer:handle_stream() method. Optional SSL support is provided.</p>
+<dl class="function">
+<dt id="TCPServer">
+<tt class="descname">TCPServer</tt><big>(</big><em>io_loop</em>, <em>ssl_options</em>, <em>max_buffer_size</em><big>)</big><a class="headerlink" href="#TCPServer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new TCPServer class instance. If the SSL certificates is provided and can not be loaded, a error is raised.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>io_loop</strong> (<tt class="docutils literal"><span class="pre">turbo.ioloop.IOLoop</span> <span class="pre">instance</span></tt>) &#8211; Provide specific IOLoop class instance. If not provided the global instance is used.</li>
+<li><strong>ssl_options</strong> (<em>Table</em>) &#8211; Optional SSL parameters.</li>
+<li><strong>max_buffer_size</strong> (<em>Number</em>) &#8211; The maximum buffer size of the server. If the limit is hit, the connection is closed.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">TCPServer class instance</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Available ssl_options keys:</p>
+<ul class="simple">
+<li>&#8220;key_file&#8221; (String) - Path to SSL key file if a SSL enabled server is wanted.</li>
+<li>&#8220;cert_file&#8221; (String) - Path to certificate file. key_file must also be set.</li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">TCPServer:handle_stream(stream, address)</tt></dt>
+<dd><p>This method is called by the class when clients connect. Implement this method in inheriting class to handle new connections.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>stream</strong> (<tt class="docutils literal"><span class="pre">turbo.iostream.IOStream</span></tt> instance) &#8211; Stream for the newly connected client.</li>
+<li><strong>address</strong> (<em>String</em>) &#8211; IP address of newly connected client.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">TCPServer:listen(port, address, backlog, family)</tt></dt>
+<dd><p>Start listening on port and address. When using this method, as oposed to TCPServer:bind you should not call
+TCPServer:start. You can call this method multiple times with different parameters to bind multiple sockets to the same TCPServer.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>port</strong> (<em>Number</em>) &#8211; The port number to bind to.</li>
+<li><strong>address</strong> (<em>Number</em>) &#8211; The address to bind to in unsigned integer hostlong format. If not address is given, <tt class="docutils literal"><span class="pre">turbo.socket.INADDR_ANY</span></tt> will be used, binding to all addresses.</li>
+<li><strong>backlog</strong> (<em>Number</em>) &#8211; Maximum backlogged client connects to allow. If not defined then 128 is used as default.</li>
+<li><strong>family</strong> (<em>Number</em>) &#8211; Optional socket family. All socket familys are defined in <tt class="docutils literal"><span class="pre">turbo.socket</span></tt> module. If not defined AF_INET is used as default.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">TCPServer:add_sockets(sockets)</tt></dt>
+<dd><p>Add multiple sockets in a table that should be bound on calling start. Use the <tt class="docutils literal"><span class="pre">turbo.sockutil.bind_sockets</span></tt> function to create sockets easily and add them to the sockets table.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sockets</strong> (<em>Table</em>) &#8211; 1 or more socket fd&#8217;s.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">TCPServer:add_socket(socket)</tt></dt>
+<dd><p>Single socket version of TCPServer:add_socket.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>socket</strong> (<em>Number</em>) &#8211; Socket fd.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">TCPServer:bind(port, address, backlog, family)</tt></dt>
+<dd><p>Bind this server to port and address. User must also call TCPServer:start to start listening on the bound socket.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>port</strong> (<em>Number</em>) &#8211; The port number to bind to.</li>
+<li><strong>address</strong> (<em>Number</em>) &#8211; The address to bind to in unsigned integer hostlong format. If not address is given, <tt class="docutils literal"><span class="pre">turbo.socket.INADDR_ANY</span></tt> will be used, binding to all addresses.</li>
+<li><strong>backlog</strong> (<em>Number</em>) &#8211; Maximum backlogged client connects to allow. If not defined then 128 is used as default.</li>
+<li><strong>family</strong> (<em>Number</em>) &#8211; Optional socket family. All socket familys are defined in <tt class="docutils literal"><span class="pre">turbo.socket</span></tt> module. If not defined AF_INET is used as default.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">TCPServer:start()</tt></dt>
+<dd><p>Start the TCPServer, accepting conncetions on bound sockets.</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">TCPServer:stop()</tt></dt>
+<dd><p>Stop the TCPServer. Closing all the sockets bound to it. Before restarting the TCPServer, the socket must be readded.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">turbo.tcpserver &#8211; Callback based TCP socket Server</a><ul>
+<li><a class="reference internal" href="#tcpserver-class">TCPServer class</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="httpserver.html"
+                        title="previous chapter">turbo.httpserver &#8211; Callback based HTTP Server</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="structs.html"
+                        title="next chapter">turbo.structs &#8211; Data structures</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/tcpserver.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="structs.html" title="turbo.structs – Data structures"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="httpserver.html" title="turbo.httpserver – Callback based HTTP Server"
+             >previous</a> |</li>
+        <li><a href="index.html">Turbo.lua 1.0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, John Abrahamsen.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
