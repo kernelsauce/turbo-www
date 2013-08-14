@@ -1,0 +1,151 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Turbo.lua API Versioning &mdash; Turbo.lua 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Turbo.lua 1.0.0 documentation" href="index.html" />
+    <link rel="next" title="turbo.web – Core web framework" href="web.html" />
+    <link rel="prev" title="Introduction" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="web.html" title="turbo.web – Core web framework"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Introduction"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Turbo.lua 1.0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="turbo-lua-api-versioning">
+<span id="apiref"></span><h1>Turbo.lua API Versioning<a class="headerlink" href="#turbo-lua-api-versioning" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="preliminaries">
+<h2>Preliminaries<a class="headerlink" href="#preliminaries" title="Permalink to this headline">¶</a></h2>
+<p>All modules are required in turbo.lua, so it&#8217;s enough to</p>
+<div class="highlight-lua"><div class="highlight"><pre><span class="kd">local</span> <span class="n">turbo</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="s1">&#39;</span><span class="s">turbo&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>All functionality is placed in the &#8220;turbo&#8221; namespace.</p>
+</div>
+<div class="section" id="module-version">
+<h2>Module Version<a class="headerlink" href="#module-version" title="Permalink to this headline">¶</a></h2>
+<p>The Turbo Web version is of the form <em>A.B.C</em>, where <em>A</em> is the
+major version, <em>B</em> is the minor version, and <em>C</em> is the micro version.
+If the micro version is zero, it&#8217;s omitted from the version string.</p>
+<p>When a new release only fixes bugs and doesn&#8217;t add new features or
+functionality, the micro version is incremented. When new features are
+added in a backwards compatible way, the minor version is incremented
+and the micro version is set to zero. When there are backwards
+incompatible changes, the major version is incremented and others are
+set to zero.</p>
+<p>The following constants specify the current version of the module:</p>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">turbo.MAJOR_VERSION</span></tt>, <tt class="docutils literal"><span class="pre">turbo.MINOR_VERSION</span></tt>, <tt class="docutils literal"><span class="pre">turbo.MICRO_VERSION</span></tt></dt>
+<dd>Numbers specifiying the major, minor and micro versions respectively.</dd>
+<dt><tt class="docutils literal"><span class="pre">turbo.VERSION</span></tt></dt>
+<dd>A string representation of the current version, e.g <tt class="docutils literal"><span class="pre">&quot;1.0.0&quot;</span></tt> or <tt class="docutils literal"><span class="pre">&quot;1.1.0&quot;</span></tt>.</dd>
+<dt><tt class="docutils literal"><span class="pre">turbo.VERSION_HEX</span></tt></dt>
+<dd>A 3-byte hexadecimal representation of the version, e.g.
+<tt class="docutils literal"><span class="pre">0x010201</span></tt> for version 1.2.1 and <tt class="docutils literal"><span class="pre">0x010300</span></tt> for version 1.3.</dd>
+</dl>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Turbo.lua API Versioning</a><ul>
+<li><a class="reference internal" href="#preliminaries">Preliminaries</a></li>
+<li><a class="reference internal" href="#module-version">Module Version</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Introduction</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="web.html"
+                        title="next chapter">turbo.web &#8211; Core web framework</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/apiref.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="web.html" title="turbo.web – Core web framework"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Introduction"
+             >previous</a> |</li>
+        <li><a href="index.html">Turbo.lua 1.0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, John Abrahamsen.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
