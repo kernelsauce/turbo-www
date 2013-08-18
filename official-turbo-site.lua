@@ -8,6 +8,7 @@ local app = turbo.web.Application:new({
 	{"^/doc/$", turbo.web.StaticFileHandler, "./doc/index.html"},
 	{"^/doc/(.*)$", turbo.web.StaticFileHandler, "./doc/"},
 	{"^/lib/(.*)$", turbo.web.StaticFileHandler, "./lib/"},
+	{"^/assets/(.*)$", turbo.web.StaticFileHandler, "./assets/"},
 })
 
 local srv = turbo.httpserver.HTTPServer(app)
