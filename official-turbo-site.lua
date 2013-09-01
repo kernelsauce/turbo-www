@@ -3,6 +3,8 @@
 
 local turbo = require "turbo"
 
+
+
 local app = turbo.web.Application:new({
 	{"^/$", turbo.web.StaticFileHandler, "./index.html"},
 	{"^/doc/$", turbo.web.StaticFileHandler, "./doc/index.html"},

@@ -1,9 +1,11 @@
 body {
-	background-color: #463265;
+	background-color: #363255;
+	position: relative;
+	padding-top: 50px;
 }
 
 pre{
-	background-color: #463265;
+	background-color: #363255;
 	border: 0;
 }
 
@@ -62,7 +64,7 @@ h4{
 }
 
 #top{
-	margin: 30px 0 0 0;
+	margin: 50px 0 0 0;
 }
 
 #teaser{
@@ -71,4 +73,16 @@ h4{
 	min-height: 250px;
 	font-size: 13px;
 	text-shadow: 0px 0px 2px #000;
+}
+
+pre code{
+	background-color: #363255;
+}
+
+/** Bootstrap overrides. */
+
+.navbar-inverse{
+	background-color: #363255;
+	text-shadow: 0 -1px 0 rgba(0,0,0,.15);
+	box-shadow: 0 1px 0 rgba(255,255,255,.1);
 }
