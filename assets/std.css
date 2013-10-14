@@ -1,17 +1,19 @@
 body {
-	background-color: #363255;
+	background-color: #fff;
 	position: relative;
 	padding-top: 50px;
+	font-family: "Helvetica Neue", Helvetica, Arial, Geneva, sans-serif;
 }
 
-pre{
-	background-color: #363255;
-	border: 0;
+#topframe{
+	background-color: #58488a;
+	padding: 3px 0 10px 0;
 }
 
 p{
-	color:whitesmoke;
+	
 }
+
 
 h4{
 	text-align: center;
@@ -30,7 +32,7 @@ h4{
 }
 
 #desc{
-	margin: 15px auto;	
+	margin: 25px auto;	
 }
 
 .auto-margin{
@@ -60,29 +62,33 @@ h4{
 
 .navbar-inverse {
 	background-color: #222;
-	border-color: #272822;
+	border-color: #58488a;
 }
 
 #top{
-	margin: 50px 0 0 0;
+	margin: 0 0 0 0;
 }
 
 #teaser{
 	padding: 0 100px;
-	background-color: #466287;
 	min-height: 250px;
 	font-size: 13px;
 	text-shadow: 0px 0px 2px #000;
 }
 
-pre code{
-	background-color: #363255;
-}
 
 /** Bootstrap overrides. */
 
+pre{
+	
+	border-color: white;
+}
+
+.btn {
+	border-radius: 0px;
+}
+
 .navbar-inverse{
-	background-color: #363255;
+	background-color: #58488a;
 	text-shadow: 0 -1px 0 rgba(0,0,0,.15);
-	box-shadow: 0 1px 0 rgba(255,255,255,.1);
 }
