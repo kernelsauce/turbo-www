@@ -377,6 +377,34 @@ must be set.</p>
 </table>
 </dd></dl>
 
+<dl class="function">
+<dt>
+<tt class="descname">IOStream:connect(address, port, family, verify, callback, errhandler, arg)</tt></dt>
+<dd><p>Connect to a address without blocking. To successfully use this method it is neccessary to check
+the return value, and also assign a error handler function. Notice that the verify arugment has
+been added as opposed to the <tt class="docutils literal"><span class="pre">IOStream:connect</span></tt> method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>host</strong> (<em>String</em>) &#8211; The host to connect to. Either hostname or IP.</li>
+<li><strong>port</strong> (<em>Number</em>) &#8211; The port to connect to. E.g 80.</li>
+<li><strong>family</strong> &#8211; Socket family. Optional. Pass nil to guess.</li>
+<li><strong>verify</strong> (<em>Boolean</em>) &#8211; Verify SSL certificate chain and match hostname in certificate on connect. Setting this to false is only recommended if the server certificates are self-signed or something like that.</li>
+<li><strong>callback</strong> (<em>Function</em>) &#8211; Optional callback for &#8220;on successfull connect&#8221;</li>
+<li><strong>errhandler</strong> (<em>Function</em>) &#8211; Optional callback for &#8220;on error&#8221;. Called with errno and its string representation as arguments.</li>
+<li><strong>arg</strong> &#8211; Optional argument for callback. callback and errhandler are called with this as first argument.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Number. -1 + error message on error, 0 on success.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 </div>
 

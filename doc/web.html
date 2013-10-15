@@ -81,7 +81,7 @@ a GET request is very easy:</p>
      <span class="k">end</span>
 
      <span class="kd">local</span> <span class="n">application</span> <span class="o">=</span> <span class="n">turbo</span><span class="p">.</span><span class="n">web</span><span class="p">.</span><span class="n">Application</span><span class="p">({</span>
-             <span class="p">{</span><span class="s2">&quot;</span><span class="s">/$&quot;</span><span class="p">,</span> <span class="n">ExampleHandler</span><span class="p">}</span>
+             <span class="p">{</span><span class="s2">&quot;</span><span class="s">^/$&quot;</span><span class="p">,</span> <span class="n">ExampleHandler</span><span class="p">}</span>
      <span class="p">})</span>
      <span class="n">application</span><span class="p">:</span><span class="n">listen</span><span class="p">(</span><span class="mi">8888</span><span class="p">)</span>
      <span class="n">turbo</span><span class="p">.</span><span class="n">ioloop</span><span class="p">.</span><span class="n">instance</span><span class="p">():</span><span class="n">start</span><span class="p">()</span>
@@ -488,7 +488,7 @@ do this:</p>
           <span class="k">if</span> <span class="ow">not</span> <span class="n">find_in_store</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">then</span>
               <span class="nb">error</span><span class="p">(</span><span class="n">turbo</span><span class="p">.</span><span class="n">web</span><span class="p">.</span><span class="n">HTTPError</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s">Could not find item in store&quot;</span><span class="p">))</span>
           <span class="k">end</span>
-          <span class="o">...</span>
+          <span class="o">..</span><span class="p">.</span>
      <span class="k">end</span>
 </pre></div>
 </td></tr></table></div>
@@ -520,13 +520,25 @@ If you are planning to serve big files, then it is recommended to use a
 proper static file web server instead. For small files that can be kept
 in memory it is ok.</p>
 <p>Usage:</p>
-<div class="highlight-lua"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2
-3</pre></div></td><td class="code"><div class="highlight"><pre>     <span class="kd">local</span> <span class="n">application</span> <span class="o">=</span> <span class="n">turbo</span><span class="p">.</span><span class="n">web</span><span class="p">.</span><span class="n">Application</span><span class="p">({</span>
-             <span class="p">{</span><span class="s2">&quot;</span><span class="s">/static/(.*)$&quot;</span><span class="p">,</span> <span class="n">turbo</span><span class="p">.</span><span class="n">web</span><span class="p">.</span><span class="n">StaticFileHandler</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s">/var/www/&quot;</span><span class="p">},</span>
-     <span class="p">})</span>
+<div class="highlight-lua"><div class="highlight"><pre><span class="kd">local</span> <span class="n">app</span> <span class="o">=</span> <span class="n">turbo</span><span class="p">.</span><span class="n">web</span><span class="p">.</span><span class="n">Application</span><span class="p">:</span><span class="n">new</span><span class="p">({</span>
+        <span class="p">{</span><span class="s2">&quot;</span><span class="s">^/$&quot;</span><span class="p">,</span> <span class="n">turbo</span><span class="p">.</span><span class="n">web</span><span class="p">.</span><span class="n">StaticFileHandler</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s">/var/www/index.html&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;</span><span class="s">^/(.*)$&quot;</span><span class="p">,</span> <span class="n">turbo</span><span class="p">.</span><span class="n">web</span><span class="p">.</span><span class="n">StaticFileHandler</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s">/var/www/&quot;</span><span class="p">}</span>
+<span class="p">})</span>
 </pre></div>
-</td></tr></table></div>
+</div>
+<p>Paths are not checked until intial hit on handler. It is then cached in memory.
+Notice that paths postfixed with / indicates that it should be treated as a directory. Paths with no / is treated
+as a single file.</p>
+</div>
+<div class="section" id="redirecthandler-class">
+<h2>RedirectHandler class<a class="headerlink" href="#redirecthandler-class" title="Permalink to this headline">¶</a></h2>
+<p>Static redirect handler that simple redirect the client to the given
+URL in 3rd argument of a entry in the Application class&#8217;s routing table.</p>
+<div class="highlight-lua"><div class="highlight"><pre><span class="kd">local</span> <span class="n">application</span> <span class="o">=</span> <span class="n">turbo</span><span class="p">.</span><span class="n">web</span><span class="p">.</span><span class="n">Application</span><span class="p">({</span>
+    <span class="p">{</span><span class="s2">&quot;</span><span class="s">^/redirector$&quot;</span><span class="p">,</span> <span class="n">turbo</span><span class="p">.</span><span class="n">web</span><span class="p">.</span><span class="n">RedirectHandler</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s">http://turbolua.org&quot;</span><span class="p">}</span>
+<span class="p">})</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="application-class">
 <h2>Application class<a class="headerlink" href="#application-class" title="Permalink to this headline">¶</a></h2>
@@ -536,9 +548,9 @@ in memory it is ok.</p>
 3
 4
 5</pre></div></td><td class="code"><div class="highlight"><pre>     <span class="kd">local</span> <span class="n">application</span> <span class="o">=</span> <span class="n">turbo</span><span class="p">.</span><span class="n">web</span><span class="p">.</span><span class="n">Application</span><span class="p">({</span>
-             <span class="p">{</span><span class="s2">&quot;</span><span class="s">/static/(.*)$&quot;</span><span class="p">,</span> <span class="n">turbo</span><span class="p">.</span><span class="n">web</span><span class="p">.</span><span class="n">StaticFileHandler</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s">/var/www/&quot;</span><span class="p">},</span>
-             <span class="p">{</span><span class="s2">&quot;</span><span class="s">/$&quot;</span><span class="p">,</span> <span class="n">ExampleHandler</span><span class="p">},</span>
-             <span class="p">{</span><span class="s2">&quot;</span><span class="s">/item/(%d*)&quot;</span><span class="p">,</span> <span class="n">ItemHandler</span><span class="p">}</span>
+             <span class="p">{</span><span class="s2">&quot;</span><span class="s">^/static/(.*)$&quot;</span><span class="p">,</span> <span class="n">turbo</span><span class="p">.</span><span class="n">web</span><span class="p">.</span><span class="n">StaticFileHandler</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s">/var/www/&quot;</span><span class="p">},</span>
+             <span class="p">{</span><span class="s2">&quot;</span><span class="s">^/$&quot;</span><span class="p">,</span> <span class="n">ExampleHandler</span><span class="p">},</span>
+             <span class="p">{</span><span class="s2">&quot;</span><span class="s">^/item/(%d*)&quot;</span><span class="p">,</span> <span class="n">ItemHandler</span><span class="p">}</span>
      <span class="p">})</span>
 </pre></div>
 </td></tr></table></div>
@@ -552,11 +564,19 @@ handler pattern&#8217;s only the first handler matched is delegated the request.
 <dl class="function">
 <dt id="Application">
 <tt class="descname">Application</tt><big>(</big><em>handlers</em>, <em>default_host</em><big>)</big><a class="headerlink" href="#Application" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize a new Application class instance.
-:param handlers: As described above. Table of tables with pattern to handler binding.
-:type handlers: Table
-:param default_host: Redirect to URL if no matching handler is found.
-:type default_host: String</p>
+<dd><p>Initialize a new Application class instance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>handlers</strong> (<em>Table</em>) &#8211; As described above. Table of tables with pattern to handler binding.</li>
+<li><strong>default_host</strong> (<em>String</em>) &#8211; Redirect to URL if no matching handler is found.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -648,6 +668,7 @@ method.</p>
 </li>
 <li><a class="reference internal" href="#httperror-class">HTTPError class</a></li>
 <li><a class="reference internal" href="#staticfilehandler-class">StaticFileHandler class</a></li>
+<li><a class="reference internal" href="#redirecthandler-class">RedirectHandler class</a></li>
 <li><a class="reference internal" href="#application-class">Application class</a></li>
 </ul>
 </li>
