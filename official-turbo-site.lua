@@ -36,11 +36,19 @@ function Community:get()
 	self:write(page)
 end
 
+local Download = class("Download", turbo.web.RequestHandler)
+function Download:get()
+	local download = tmpl:load("download.mustache")
+	local page = tmpl:render(download, {menu=menu, foot=foot, head=head})
+	self:write(page)
+end
+
 local app = turbo.web.Application({
 	{"^/$", Index},
 	{"^/performance$", Performance},
 	{"^/lua$", Lua},
 	{"^/community$", Community},
+	{"^/download$", Download},
 	{"^/gettingstarted$", turbo.web.RedirectHandler,
 		"/doc/get_started.html"},
 	
