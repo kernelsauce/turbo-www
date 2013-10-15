@@ -60,5 +60,5 @@ local app = turbo.web.Application({
 
 local srv = turbo.httpserver.HTTPServer(app)
 srv:bind(8888)
-srv:start(1)
+srv:start(8)
 turbo.ioloop.instance():start()
