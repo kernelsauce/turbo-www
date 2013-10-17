@@ -51,7 +51,6 @@ local app = turbo.web.Application({
 	{"^/download$", Download},
 	{"^/gettingstarted$", turbo.web.RedirectHandler,
 		"/doc/get_started.html"},
-	
 	{"^/doc/$", turbo.web.StaticFileHandler, "./doc/index.html"},
 	{"^/doc/(.*)$", turbo.web.StaticFileHandler, "./doc/"},
 	{"^/lib/(.*)$", turbo.web.StaticFileHandler, "./lib/"},
