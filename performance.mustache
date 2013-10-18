@@ -2,8 +2,121 @@
 {{{menu}}}
 <div class="container-narrow-spaced">
     <h1>Performance</h1><br />
+    <p>So let's compare Turbo.lua to some other commonly used web frameworks.
+    We are comparing frameworks by writing a some code snippets that produces
+    the same output.</p>
+    <p>The code written for all frameworks must do two things:</p>
+    <ul>
+        <li>Accept a GET request</li>
+        <li>Decode a "value" argument</li>
+        <li>If the argument is set, reply with a XML response. If not set
+        reply with a XML error response.</li>
+    </ul>
+    <p>Roughly what we are measuring here is:</p>
+    <ul>
+        <li>Socket handling</li>
+        <li>HTTP header parsing</li>
+        <li>The respective languages string concat operation</li>
+        <li>General speed of interpreter and framework together</li>
+    </ul>
     
-    <p>So lets compare Turbo.lua to some other commonly used web frameworks.</p>
+    <h2>Turbo.lua (Lua)</h2>
+    <pre>
+        <code class="lua">
+local turbo = require "turbo"
+
+local MainHandler = class("MainHandler", turbo.web.RequestHandler)
+
+function MainHandler:get()
+    local value = self:get_argument("value", false)
+    self:set_header('Content-Type', 'text/xml')
+    if not value then
+        self:write("<http_test><error>no value specified</error></http_test>")
+    else
+        self:write("<http_test><value>" .. value .. "</value></http_test>")
+    end
+end
+
+turbo.web.Application({
+    {"^/$", MainHandler}
+}):listen(8888)
+turbo.ioloop.instance():start()
+        </code>
+    </pre><br />
+
+    <h2>Tornado (Python)</h2>
+    <p><i>Note that the Python code is run on Pypy. Not everyone would dare to do
+    that for production usage.</i></p>
+    <pre>
+        <code class="python">
+import tornado.ioloop
+import tornado.web
+
+class MainHandler(tornado.web.RequestHandler):
+    def get(self):
+        value = self.get_argument('value', '')
+        self.set_header('Content-Type', 'text/xml')
+        if value == '':
+            self.write("<http_test><error>no value specified</error></http_test>")
+        else:
+            self.write("<http_test><value>" + value + "</value></http_test>")
+
+application = tornado.web.Application([
+    (r"/", MainHandler),
+])
+
+if __name__ == "__main__":
+    application.listen(8888)
+    tornado.ioloop.IOLoop.instance().start()
+        </code>
+    </pre><br />
+    <h2>Node.js (Javascript)</h2>
+    <pre>
+        <code class="javascript">
+var http = require('http'), url = require('url');
+http.createServer(function(request, response) {
+	response.writeHead(200, {"Content-Type":"text/xml"});
+	var urlObj = url.parse(request.url, true);
+	var value = urlObj.query["value"];
+	if (value == ''){
+		response.end("<http_test><error>no value specified</error></http_test>");
+	} else {
+		response.end("<http_test><value>" + value + "</value></http_test>");
+	}
+}).listen(8888);
+        </code>
+    </pre><br />
+    
+    <h2>Results</h2>
+    <p>The benchmark tool being used is HP's <i>httperf</i>. autobench is also
+    used to ease the testing of different loads and gather results. All of the
+    results are given in csv format, and are available <a>here</a>.</p>
+    <p>Interpreting the results is pretty straightforward. The graph shows and increasing amount
+    of requests being issued each second. The blue bar show the "demanded"
+    amount of requests, the red bar show the actual delivered requests. The max
+    throughput is found when the the two lines meet up. When demanded requests
+    increase beyond the actual delivered requests the response times goes up
+    drastically.</p><br />
+
+    <h4>Turbo.lua with LuaJIT 2</h4>
+    <img src="assets/bench/turbo-bench.png"/>
+    <p><strong>Max requests/sec: 23323</strong></p>
+    <h4>Tornado with PyPy</h4>
+    <img src="assets/bench/tornado-pypy-bench.png"/>
+    <p><strong>Max requests/sec: 15977</strong></p>
+    <h4>Node.js</h4>
+    <img src="assets/bench/node-bench.png"/>
+    <p><strong>Max requests/sec: 16375</strong></p>
+    <br />
+
+    <p>And the winner is Turbo.</p>
+
+    <p>The tests were done on a Ubuntu 12.04 server with a Intel i7 2600K and 16GB RAM.
+    And they may not be 100% scientifically right, but it gives you some pointers
+    about the whereabouts of LuaJIT and Turbo.lua compared to others. The difference
+    will only increase as more code is executed per requests by the fastest JIT compiler available
+    right now; LuaJIT.</p>
+
     <h1>. . .</h1>
 </div>
 {{{foot}}}
