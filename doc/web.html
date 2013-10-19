@@ -648,6 +648,177 @@ method.</p>
 </dd></dl>
 
 </div>
+<div class="section" id="mustache-templating">
+<h2>Mustache Templating<a class="headerlink" href="#mustache-templating" title="Permalink to this headline">¶</a></h2>
+<p>Turbo.lua has a small and very fast Mustache parser built-in. Mustache templates
+are logic-less templates, which are supposed to help you keep your business logic
+outside of templates and inside &#8220;controllers&#8221;. It is widely known by Javascript
+developers and very simple to understand.</p>
+<p>For more information on the Mustache markup, please see this:
+<a class="reference external" href="http://mustache.github.io/mustache.5.html">http://mustache.github.io/mustache.5.html</a></p>
+<dl class="function">
+<dt id="Mustache.compile">
+<tt class="descclassname">Mustache.</tt><tt class="descname">compile</tt><big>(</big><em>template</em><big>)</big><a class="headerlink" href="#Mustache.compile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compile a Mustache highlighted string into its intermediate state before rendering. This function does some validation on the template. If it finds
+syntax errors a error with a message is raised. It is always a good idea to cache pre-compiled frequently used templates before rendering them. Although
+compiling each time is usally not a big overhead. This function can throw errors if the template contains invalid logic.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>template</strong> &#8211; (String) Template in string form.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">Parse table that can be used for Mustache.render function</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="Mustache.render">
+<tt class="descclassname">Mustache.</tt><tt class="descname">render</tt><big>(</big><em>template</em>, <em>obj</em>, <em>partials</em>, <em>allow_blank</em><big>)</big><a class="headerlink" href="#Mustache.render" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render a template. Accepts a parse table compiled by Mustache.compile or a uncompiled string. Obj is the table with keys. This function can throw errors in
+case of un-compiled string being compiled with Mustache.compile internally.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>template</strong> &#8211; Accepts a pre-compiled template or a un-compiled string.</li>
+<li><strong>obj</strong> (<em>Table</em>) &#8211; Parameters for template rendering.</li>
+<li><strong>partials</strong> (<em>Table</em>) &#8211; Partial snippets. Will be treated as static and not compiled...</li>
+<li><strong>allow_blank</strong> &#8211; Halt with error if key does not exist in object table.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p>Example templating:</p>
+<div class="highlight-html"><pre> &lt;body&gt;
+     &lt;h1&gt;
+             {{heading }}
+     &lt;/h1&gt;
+     {{!
+         Some comment section that
+         even spans across multiple lines,
+         that I just have to have to explain my flawless code.
+     }}
+     &lt;h2&gt;
+         {{{desc}}} {{! No escape with triple mustaches allow HTML tags! }}
+         {{&amp;desc}} {{! No escape can also be accomplished by &amp; char }}
+     &lt;/h2&gt;
+     &lt;p&gt;I am {{age}} years old. What would you like to buy in my shop?&lt;/p&gt;
+     {{  #items }}  {{! I like spaces alot!          }}
+         Item: {{item}}
+         {{#types}}
+                 {{! Only print items if available.}}
+                 Type available: {{type}}
+         {{/types}}
+         {{^types}}  Only one type available.
+         {{! Apparently only one type is available because types is not set,
+         determined by the hat char ^}}
+         {{/types}}
+     {{/items}}
+     {{^items}}
+             No items available!
+     {{/items}}
+ &lt;/body&gt;</pre>
+</div>
+<p>With a render table likes this:</p>
+<div class="highlight-lua"><div class="highlight"><pre><span class="p">{</span>
+    <span class="n">heading</span><span class="o">=</span><span class="s2">&quot;</span><span class="s">My website!&quot;</span><span class="p">,</span>
+    <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;</span><span class="s">&lt;b&gt;Big important website&lt;/b&gt;&quot;</span><span class="p">,</span>
+    <span class="n">age</span><span class="o">=</span><span class="mi">27</span><span class="p">,</span>
+    <span class="n">items</span><span class="o">=</span><span class="p">{</span>
+              <span class="p">{</span><span class="n">item</span><span class="o">=</span><span class="s2">&quot;</span><span class="s">Bread&quot;</span><span class="p">,</span>
+                  <span class="n">types</span><span class="o">=</span><span class="p">{</span>
+                      <span class="p">{</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;</span><span class="s">light&quot;</span><span class="p">},</span>
+                      <span class="p">{</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;</span><span class="s">fatty&quot;</span><span class="p">}</span>
+                  <span class="p">}</span>
+          <span class="p">},</span>
+          <span class="p">{</span><span class="n">item</span><span class="o">=</span><span class="s2">&quot;</span><span class="s">Milk&quot;</span><span class="p">},</span>
+          <span class="p">{</span><span class="n">item</span><span class="o">=</span><span class="s2">&quot;</span><span class="s">Sugar&quot;</span><span class="p">}</span>
+   <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Will produce this output after rendering:</p>
+<div class="highlight-html"><div class="highlight"><pre><span class="nt">&lt;body&gt;</span>
+    <span class="nt">&lt;h1&gt;</span>
+        My%20website%21
+    <span class="nt">&lt;/h1&gt;</span>
+    <span class="nt">&lt;h2&gt;</span>
+        <span class="nt">&lt;b&gt;</span>Big important website<span class="nt">&lt;/b&gt;</span>
+        <span class="nt">&lt;b&gt;</span>Big important website<span class="nt">&lt;/b&gt;</span>
+    <span class="nt">&lt;/h2&gt;</span>
+    <span class="nt">&lt;p&gt;</span>I am 27 years old. What would you like to buy in my shop?<span class="nt">&lt;/p&gt;</span>
+        Item: Bread
+            Type available: light
+            Type available: fatty
+        Item: Milk
+            Only one type available.
+        Item: Sugar
+            Only one type available.
+<span class="nt">&lt;/body&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="mustache-templatehelper-class">
+<h2>Mustache.TemplateHelper class<a class="headerlink" href="#mustache-templatehelper-class" title="Permalink to this headline">¶</a></h2>
+<p>A simple class that simplifies the loading of Mustache templates, pre-compile and cache them for future use.</p>
+<dl class="function">
+<dt id="Mustache.TemplateHelper">
+<tt class="descclassname">Mustache.</tt><tt class="descname">TemplateHelper</tt><big>(</big><em>base_path</em><big>)</big><a class="headerlink" href="#Mustache.TemplateHelper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new TemplateHelper class instance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>base_path</strong> (<em>String</em>) &#8211; Template base directory. This will be used as base path when loading templates using the load method.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><tt class="docutils literal"><span class="pre">Mustache.TemplateHelper</span> <span class="pre">class</span></tt></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">Mustache.TemplateHelper:load(template)</tt></dt>
+<dd><p>Pre-load a template.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>template</strong> (<em>String</em>) &#8211; Template name, e.g file name in base directory.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">Mustache.TemplateHelper:render(template, table, partials, allow_blank)</tt></dt>
+<dd><p>Render a template by name. If called twice the template will be cached from first time.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>template</strong> (<em>String</em>) &#8211; Template name, e.g file name in base directory.</li>
+<li><strong>obj</strong> (<em>Table</em>) &#8211; Parameters for template rendering.</li>
+<li><strong>partials</strong> (<em>Table</em>) &#8211; Partial snippets. Will be treated as static and not compiled...</li>
+<li><strong>allow_blank</strong> &#8211; Halt with error if key does not exist in object table.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -670,6 +841,8 @@ method.</p>
 <li><a class="reference internal" href="#staticfilehandler-class">StaticFileHandler class</a></li>
 <li><a class="reference internal" href="#redirecthandler-class">RedirectHandler class</a></li>
 <li><a class="reference internal" href="#application-class">Application class</a></li>
+<li><a class="reference internal" href="#mustache-templating">Mustache Templating</a></li>
+<li><a class="reference internal" href="#mustache-templatehelper-class">Mustache.TemplateHelper class</a></li>
 </ul>
 </li>
 </ul>
