@@ -181,8 +181,8 @@ callback will be empty.</p>
 <tt class="descname">IOStream:read_until_close(callback, arg, streaming_callback, streaming_arg)</tt></dt>
 <dd><p>Reads all data from the socket until it is closed.
 If a streaming_callback argument is given, it will be called with
-chunks of data as they become available, and the argument to the
-final call to callback will be empty.
+chunks of data as they become available, and the argument to the final call to
+callback will contain the final chunk.
 This method respects the max_buffer_size set in the IOStream object.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
