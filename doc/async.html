@@ -53,6 +53,31 @@
             
   <div class="section" id="turbo-async-asynchronous-clients">
 <span id="async"></span><h1>turbo.async &#8211; Asynchronous clients<a class="headerlink" href="#turbo-async-asynchronous-clients" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="utilities-for-coroutines">
+<h2>Utilities for coroutines<a class="headerlink" href="#utilities-for-coroutines" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="task">
+<tt class="descname">task</tt><big>(</big><em>func</em>, <em>...</em><big>)</big><a class="headerlink" href="#task" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for functions that always takes callback and callback
+argument as last arguments to be able to yield and resume execution of
+function when callback is called from another function.</p>
+<p>No callbacks required, the arguments that would normally be used to
+call the callback is put in the left-side result.</p>
+<p>Usage:
+Consider one of the functions of the IOStream class which uses a
+callback based API: IOStream:read_until(delimiter, callback, arg)</p>
+</dd></dl>
+
+<div class="highlight-lua"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span class="kd">local</span> <span class="n">res</span> <span class="o">=</span> <span class="nb">coroutine.yield</span><span class="p">(</span><span class="n">turbo</span><span class="p">.</span><span class="n">async</span><span class="p">.</span><span class="n">task</span><span class="p">(</span>
+        <span class="n">stream</span><span class="p">.</span><span class="n">read_until</span><span class="p">,</span> <span class="n">stream</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">))</span>
+
+<span class="c1">-- Result from read_until operation will be returned in the res variable.</span>
+</pre></div>
+</td></tr></table></div>
+</div>
 <div class="section" id="httpclient-class">
 <h2>HTTPClient class<a class="headerlink" href="#httpclient-class" title="Permalink to this headline">¶</a></h2>
 <p>Based on the IOStream/SSLIOStream and IOLoop classes.
@@ -201,6 +226,7 @@ at a time. If multiple request should be sent then create multiple instances.</p
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">turbo.async &#8211; Asynchronous clients</a><ul>
+<li><a class="reference internal" href="#utilities-for-coroutines">Utilities for coroutines</a></li>
 <li><a class="reference internal" href="#httpclient-class">HTTPClient class</a></li>
 <li><a class="reference internal" href="#httpresponse-class">HTTPResponse class</a></li>
 </ul>

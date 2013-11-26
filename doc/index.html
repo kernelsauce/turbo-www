@@ -68,6 +68,16 @@ If you do not know Lua then do not fear as its probably one of the easiest langu
 <li>Small footprint</li>
 </ul>
 </div>
+<div class="section" id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<p>Linux distro&#8217;s are the only OS supported at this point (although adding support for other Unix&#8217;s is trivial).
+Make sure that the latest LuaJIT is installed. Version 2.0 is required, <a class="reference external" href="http://luajit.org/">http://luajit.org/</a>. Most package managers have LuaJIT 2.0 available by now.</p>
+<p>Installing Turbo.lua is easy. Simply download and run <tt class="docutils literal"><span class="pre">make</span> <span class="pre">install</span></tt> (requires root priv). It is installed in the default Lua 5.1 and LuaJIT 2.0 module directory.</p>
+<p>You can specify your own prefix by using <tt class="docutils literal"><span class="pre">make</span> <span class="pre">install</span> <span class="pre">PREFIX=&lt;prefix&gt;</span></tt>, and you can specify LuaJIT version with a <tt class="docutils literal"><span class="pre">LUAJIT_VERSION=2.0.0</span></tt> style parameter.</p>
+<p>To compile without support for OpenSSL (and SSL connections) use <tt class="docutils literal"><span class="pre">make</span> <span class="pre">install</span> <span class="pre">SSL=none</span></tt>.</p>
+<p>In essence the toolkit can run from anywere, but is must be able to load the libtffi_wrap.so at run time.
+To verify a installation you can try running the applications in the examples folder.</p>
+</div>
 <div class="section" id="object-oriented-lua">
 <h1>Object oriented Lua<a class="headerlink" href="#object-oriented-lua" title="Permalink to this headline">¶</a></h1>
 <p>Turbo.lua are programmed in a object oriented fashion. There are many ways to do
@@ -120,6 +130,7 @@ easy to learn if you are used to Python, Java or C++.</p>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="async.html">turbo.async &#8211; Asynchronous clients</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="async.html#utilities-for-coroutines">Utilities for coroutines</a></li>
 <li class="toctree-l2"><a class="reference internal" href="async.html#httpclient-class">HTTPClient class</a></li>
 <li class="toctree-l2"><a class="reference internal" href="async.html#httpresponse-class">HTTPResponse class</a></li>
 </ul>
@@ -158,6 +169,10 @@ easy to learn if you are used to Python, Java or C++.</p>
 <li class="toctree-l2"><a class="reference internal" href="structs.html#buffer-low-level-mutable-buffer">buffer, Low-level mutable buffer</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="hash.html">turbo.hash &#8211; Cryptographic Hashes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="hash.html#sha1-class">SHA1 class</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="util.html">turbo.util Common utilities</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="util.html#table-tools">Table tools</a></li>
 <li class="toctree-l2"><a class="reference internal" href="util.html#low-level">Low level</a></li>
@@ -185,6 +200,7 @@ easy to learn if you are used to Python, Java or C++.</p>
   <h3><a href="#">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Introduction</a></li>
+<li><a class="reference internal" href="#installation">Installation</a></li>
 <li><a class="reference internal" href="#object-oriented-lua">Object oriented Lua</a></li>
 <li><a class="reference internal" href="#tutorials">Tutorials</a><ul>
 </ul>

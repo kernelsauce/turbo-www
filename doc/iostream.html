@@ -290,6 +290,24 @@ memory usage and higher throughput.</p>
 
 <dl class="function">
 <dt>
+<tt class="descname">IOStream:set_max_buffer_size(sz)</tt></dt>
+<dd><p>Set the maximum amount of bytes to be buffered internally in the IOStream instance.
+This limit can also be set on class instanciation. This method does NOT check the
+current size and does NOT immediately raise a error if the size is already exceeded.
+A error will instead occur when the IOStream is adding data to its buffer on the next
+occasion and detects a breached limit.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sz</strong> (<em>Number</em>) &#8211; Size of max buffer in bytes.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
 <tt class="descname">IOStream:close()</tt></dt>
 <dd><p>Close the stream and its associated socket.</p>
 </dd></dl>
