@@ -1,47 +1,5 @@
-{{{head}}}
-
-<div id="back" class="hidden" style="position:fixed; cursor:pointer;">
-	<span class="glyphicon glyphicon-circle-arrow-left" style="font-size:80px;"></span>
-</div>
-<div id="topframe">
-	<div id="top" class="centered">
-		<img src="assets/turbo-invert.png" style="margin-top:10px;">
-		<p id="desc" class="container-narrow whitesmoke-text" style="line-height:180%;">
-			Turbo.lua is a framework built for LuaJIT 2 to simplify the task of building fast and scalable network applications. 
-			It uses a event-driven, non-blocking, no thread design to deliver excellent performance and minimal footprint to high-load 
-			applications while also providing excellent support for embedded uses.
-			
-			The toolkit can be used for HTTP REST API's, traditional web pages and open connections 
-			like Websockets, or just as high level building blocks for native speed network applications. 
-		</p>
-		<p class="whitesmoke-text">
-			It offers a high degree of freedom to do <b><i>whatever you want, your way.</i></b>
-		</p>
-	</div>
-	<div class="container-narrow-spaced">
-		<center>
-			<a class="btn btn-success btn-lg " 
-				href="https://github.com/kernelsauce/turbo/archive/v1.0-beta10.tar.gz">
-				<span class="glyphicon glyphicon-import"></span>
-				Download v1.0 Beta10</a>
-		</center>
-	</div>
-	<div class="container-narrow-spaced">
-		<center>
-			<a class="btn btn-info btn-sm " href="doc/"><span class="glyphicon glyphicon-book"></span> API docs</a>
-			<a class="btn btn-info btn-sm " href="https://github.com/kernelsauce/turbo" target="_blank">
-				<span class="glyphicon glyphicon-zoom-in"></span>
-				View Github project</a>
-		</center>
-		
-	</div>
-</div>
-<br />
-<div class="container-spaced" id="content">
-
-	<div class="row">
-	  <div class="col-md-7" id="content-left">
 	
+<div class="container-narrow-spaced">
 <h1>Hello World</h1>
 <p>Making a web server that responds with the canonical message is easy.
 	
@@ -123,7 +81,7 @@ function SMTPServ:_handle_smtp_protocol()
   -- Get client hostname. Some clients like to ask for extensions...
   ::greet::
   local helo_line = coroutine.yield(turbo.async.task(
-  	IOStream.read_until, stream, "\r\n"))
+    IOStream.read_until, stream, "\r\n"))
   -- Yielding here has the effect that the function will halt and the I/O Loop 
   -- will schedule this thread to be resumed with full context when the 
   -- I/O Stream instance has read the defined delimiter (CRLF).
@@ -191,47 +149,8 @@ end
 local SMTP = SMTPServ() 
 SMTP:listen(SMTP_PORT)
 turbo.ioloop.instance():start()
+
 </code></pre>
 
-</div>
-
-<div class="col-md-4 menu-container" id="content-right">
-	<div class="menu-item menu-item-selected" url="/code">
-		<h1><span class="glyphicon glyphicon-edit" style="font-size:20px"></span> Code examples</h1>
-		<p>Just some simple code examples and teasers.</p>
-	</div>
-
-	<div class="menu-item" url="/lua">
-		<h1><span class="glyphicon glyphicon-info-sign" style="font-size:20px"></span> About</h1>
-		<p>A quick technical overview.</p>
-	</div>
-
-	<div class="menu-item" url="/doc/" target="blank">
-		<h1><span class="glyphicon glyphicon-file" style="font-size:20px"></span> Documentation</h1>
-		<p>Official API documentation for the core framework.</p>
-	</div>
-
-	<div class="menu-item" url="/doc/get_started.html" target="blank">
-		<h1><span class="glyphicon glyphicon-expand" style="font-size:20px"></span> Getting started</h1>
-		<p>How do you get started?</p>
-	</div>
-
-	<div class="menu-item" url="/modules">
-		<h1><span class="glyphicon glyphicon-certificate" style="font-size:20px"></span> Modules</h1>
-		<p>Browse native modules for Turbo.lua.</p>
-	</div>
-
-	<div class="menu-item" url="/community">
-		<h1><span class="glyphicon glyphicon-comment" style="font-size:20px"></span> Community</h1>
-		<p>Get in touch with others that use Turbo.lua.</p>
-	</div>
-
-	<div class="menu-item" url="/sponsor">
-		<h1><span class="glyphicon glyphicon-question-sign" style="font-size:20px"></span> Sponsor</h1>
-		<p>Missing a feature or module?</p>
-	</div>
-</div>
 
 </div>
-</div>
-{{{foot}}}

@@ -3,61 +3,44 @@
 
 local turbo = require "turbo"
 local tmpl = turbo.web.Mustache.TemplateHelper("./")
-local menu = tmpl:render("menu.mustache")
-local foot = tmpl:render("foot.mustache")
-local head = tmpl:render("header.mustache")
-
+local SFH = turbo.web.StaticFileHandler
 
 local Index = class("Index", turbo.web.RequestHandler)
 function Index:get()
 	local index = tmpl:load("index.mustache")
-	local page = tmpl:render(index, {menu=menu, foot=foot, head=head})
+	local page = tmpl:render(index, {
+		menu = tmpl:render("menu.mustache"), 
+		foot = tmpl:render("foot.mustache"), 
+		head = tmpl:render("header.mustache")
+	})
 	self:write(page)
 end
 
-local Performance = class("Performance", turbo.web.RequestHandler)
-function Performance:get()
-	local performance = tmpl:load("performance.mustache")
-	local page = tmpl:render(performance, {menu=menu, foot=foot, head=head})
-	self:write(page)
-end
-
-local Lua = class("Lua", turbo.web.RequestHandler)
-function Lua:get()
-	local lua = tmpl:load("lua.mustache")
-	local page = tmpl:render(lua, {menu=menu, foot=foot, head=head})
-	self:write(page)
-end
-
-local Community = class("Community", turbo.web.RequestHandler)
-function Community:get()
-	local community = tmpl:load("community.mustache")
-	local page = tmpl:render(community, {menu=menu, foot=foot, head=head})
-	self:write(page)
-end
-
-local Download = class("Download", turbo.web.RequestHandler)
-function Download:get()
-	local download = tmpl:load("download.mustache")
-	local page = tmpl:render(download, {menu=menu, foot=foot, head=head})
+local TemplateRenderer = class("TemplateRenderer", turbo.web.RequestHandler)
+function TemplateRenderer:get()
+	local page = tmpl:render(self.options)
 	self:write(page)
 end
 
 local app = turbo.web.Application({
-	{"^/$", Index},
-	{"^/performance$", Performance},
-	{"^/lua$", Lua},
-	{"^/community$", Community},
-	{"^/download$", Download},
-	{"^/gettingstarted$", turbo.web.RedirectHandler,
-		"/doc/get_started.html"},
-	{"^/doc/$", turbo.web.StaticFileHandler, "./doc/index.html"},
-	{"^/doc/(.*)$", turbo.web.StaticFileHandler, "./doc/"},
-	{"^/lib/(.*)$", turbo.web.StaticFileHandler, "./lib/"},
-	{"^/assets/(.*)$", turbo.web.StaticFileHandler, "./assets/"},
+	{"^/$", 			Index},
+	{"^/performance$", 	TemplateRenderer, 	"performance.mustache"},
+	{"^/lua$", 			TemplateRenderer, 	"lua.mustache"},
+	{"^/community$", 	TemplateRenderer, 	"community.mustache"},
+	{"^/download$", 	TemplateRenderer, 	"download.mustache"},
+	{"^/code$", 		TemplateRenderer, 	"code.mustache"},
+	{"^/modules$", 		TemplateRenderer, 	"modules.mustache"},
+	{"^/sponsor$", 		TemplateRenderer, 	"sponsor.mustache"},
+	-- End of templates.
+	{"^/doc/$", 		SFH, 				"./doc/index.html"},
+	{"^/doc/(.*)$", 	SFH, 				"./doc/"},
+	{"^/lib/(.*)$", 	SFH, 				"./lib/"},
+	{"^/assets/(.*)$", 	SFH, 				"./assets/"},
+	-- Redirect to Get started guide.
+	{"^/gettingstarted$", turbo.web.RedirectHandler, "/doc/get_started.html"},
 })
 
 local srv = turbo.httpserver.HTTPServer(app)
-srv:bind(8888)
-srv:start(8)
+srv:bind(8889)
+srv:start(1)
 turbo.ioloop.instance():start()

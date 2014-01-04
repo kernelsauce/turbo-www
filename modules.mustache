@@ -1,0 +1,26 @@
+{{{head}}}
+{{{menu}}}
+<div class="container-narrow-spaced">
+    <h2>Modules</h2>
+    <img src="assets/modules.png"></img>
+    <br /><br />
+    <p>Using native modules instead of generic Lua modules are important when using sockets to  
+        communicate with e.g databases to get the best performance, since the generic modules will block during long operations. If the operations you are doing are relatively fast then you may get away with using a generic module.
+    </p>
+    <p>
+        Creating modules for Turbo using the highly abstracted IOStream classes is real easy.
+        If there is not a driver for e.g a database etc available then please do try to make it.
+        <a href="doc/drivers">The API documentation contains instructions on how to  make async modules for Turbo.lua</a>.
+    </p>
+    <h2>Available modules</h2>
+    <ul>
+        <li>
+            <a href="https://github.com/enotodden/turboredis/blob/master/turboredis.lua"
+                target="_blank">
+                turboredis
+            </a>
+        </li>
+    </ul>
+    <h1>. . .</h1>
+</div>
+{{{foot}}}
