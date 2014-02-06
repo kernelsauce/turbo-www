@@ -2,6 +2,12 @@
 {{{menu}}}
 <div class="container-narrow-spaced">
     <img src="assets/turbo.png">
+    <h2>What?</h2>
+    <p>Turbo.lua is just another framework to create network programs for Linux. It uses
+    kernel event polling to manage network connections instead of the traditional concurency models that employ threads.
+    As it does not use threads, no locks, mutexes or other bad things are required. It solves the same issues as Node.js, Tornado etc. except it solves it with Lua. A simple, yet powerful language that fits nicely with the event polling model with its builtin coroutines.
+    </p>
+
     <h2>Why?</h2>
     <p>Many people has asked me (John Abrahamsen, creator of Turbo.lua) this. Why create yet another networking framework... There is probably already millions of them? Well the idea sprung to mind when I were programming some web management console for 
         a embedded product using the Tornado Framework. 
