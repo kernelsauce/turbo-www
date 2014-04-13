@@ -26,7 +26,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="Turbo.lua 1.0.0 documentation" href="index.html" />
-    <link rel="next" title="turbo.ioloop – Main I/O Loop" href="ioloop.html" />
+    <link rel="next" title="turbo.websocket – WebSocket server and client" href="websocket.html" />
     <link rel="prev" title="turbo.web – Core web framework" href="web.html" /> 
   </head>
   <body>
@@ -37,7 +37,7 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="ioloop.html" title="turbo.ioloop – Main I/O Loop"
+          <a href="websocket.html" title="turbo.websocket – WebSocket server and client"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="web.html" title="turbo.web – Core web framework"
@@ -101,9 +101,9 @@ in use then it will return a error.</p>
 7</pre></div></td><td class="code"><div class="highlight"><pre>     <span class="kd">local</span> <span class="n">res</span> <span class="o">=</span> <span class="nb">coroutine.yield</span><span class="p">(</span>
              <span class="n">turbo</span><span class="p">.</span><span class="n">async</span><span class="p">.</span><span class="n">HTTPClient</span><span class="p">():</span><span class="n">fetch</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">http://domain.com/latest&quot;</span><span class="p">))</span>
      <span class="k">if</span> <span class="n">res</span><span class="p">.</span><span class="n">error</span> <span class="k">then</span>
-             <span class="n">self</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">Could not get latest from domain.come&quot;</span><span class="p">)</span>
+             <span class="n">self</span><span class="p">:</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">Could not get latest from domain.come&quot;</span><span class="p">)</span>
      <span class="k">else</span>
-             <span class="n">self</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="n">res</span><span class="p">.</span><span class="n">body</span><span class="p">)</span>
+             <span class="n">self</span><span class="p">:</span><span class="n">write</span><span class="p">(</span><span class="n">res</span><span class="p">.</span><span class="n">body</span><span class="p">)</span>
      <span class="k">end</span>
 </pre></div>
 </td></tr></table></div>
@@ -127,10 +127,10 @@ at a time. If multiple request should be sent then create multiple instances.</p
 </table>
 <p>Available SSL options:</p>
 <ul class="simple">
-<li>&#8220;priv_file&#8221; (String) - Path to SSL / HTTPS private key file.</li>
-<li>&#8220;cert_file&#8221; (String) - Path to SSL / HTTPS certificate key file.</li>
-<li>&#8220;ca_path&#8221; (String) - Path to SSL / HTTPS CA certificate verify location, if not given builtin is used, which is copied from Ubuntu 12.10.</li>
-<li>&#8220;verify_ca&#8221; (Boolean) SSL / HTTPS verify servers certificate. Default is true.</li>
+<li><tt class="docutils literal"><span class="pre">priv_file</span></tt> (String) - Path to SSL / HTTPS private key file.</li>
+<li><tt class="docutils literal"><span class="pre">cert_file</span></tt> (String) - Path to SSL / HTTPS certificate key file.</li>
+<li><tt class="docutils literal"><span class="pre">ca_path</span></tt> (String) - Path to SSL / HTTPS CA certificate verify location, if not given builtin is used, which is copied from Ubuntu 12.10.</li>
+<li><tt class="docutils literal"><span class="pre">verify_ca</span></tt> (Boolean) SSL / HTTPS verify servers certificate. Default is true.</li>
 </ul>
 </dd></dl>
 
@@ -139,17 +139,19 @@ at a time. If multiple request should be sent then create multiple instances.</p
 <tt class="descname">errors</tt><a class="headerlink" href="#errors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Numeric error codes set in the HTTPResponse returned by <tt class="docutils literal"><span class="pre">HTTPClient:fetch</span></tt>:</p>
 <blockquote>
-<div><p>INVALID_URL            - URL could not be parsed.</p>
-<p>INVALID_SCHEMA         - Invalid URL schema</p>
-<p>COULD_NOT_CONNECT      - Could not connect, check message.</p>
-<p>PARSE_ERROR_HEADERS    - Could not parse response headers.</p>
-<p>CONNECT_TIMEOUT        - Connect timed out.</p>
-<p>REQUEST_TIMEOUT        - Request timed out.</p>
-<p>NO_HEADERS             - Shouldn&#8217;t happen.</p>
-<p>REQUIRES_BODY          - Expected a HTTP body, but none set.</p>
-<p>INVALID_BODY           - Request body is not a string.</p>
-<p>SOCKET_ERROR           - Socket error, check message.</p>
-<p>SSL_ERROR              - SSL error, check message.</p>
+<div><p><tt class="docutils literal"><span class="pre">INVALID_URL</span></tt>            - URL could not be parsed.</p>
+<p><tt class="docutils literal"><span class="pre">INVALID_SCHEMA</span></tt>         - Invalid URL schema</p>
+<p><tt class="docutils literal"><span class="pre">COULD_NOT_CONNECT</span></tt>      - Could not connect, check message.</p>
+<p><tt class="docutils literal"><span class="pre">PARSE_ERROR_HEADERS</span></tt>    - Could not parse response headers.</p>
+<p><tt class="docutils literal"><span class="pre">CONNECT_TIMEOUT</span></tt>        - Connect timed out.</p>
+<p><tt class="docutils literal"><span class="pre">REQUEST_TIMEOUT</span></tt>        - Request timed out.</p>
+<p><tt class="docutils literal"><span class="pre">NO_HEADERS</span></tt>             - Shouldn&#8217;t happen.</p>
+<p><tt class="docutils literal"><span class="pre">REQUIRES_BODY</span></tt>          - Expected a HTTP body, but none set.</p>
+<p><tt class="docutils literal"><span class="pre">INVALID_BODY</span></tt>           - Request body is not a string.</p>
+<p><tt class="docutils literal"><span class="pre">SOCKET_ERROR</span></tt>           - Socket error, check message.</p>
+<p><tt class="docutils literal"><span class="pre">SSL_ERROR</span></tt>              - SSL error, check message.</p>
+<p><tt class="docutils literal"><span class="pre">BUSY</span></tt>                       - Operation in progress.</p>
+<p><tt class="docutils literal"><span class="pre">REDIRECT_MAX</span></tt>               - Redirect maximum reached.</p>
 </div></blockquote>
 </dd></dl>
 
@@ -173,20 +175,20 @@ at a time. If multiple request should be sent then create multiple instances.</p
 </table>
 <p>Available keyword arguments:</p>
 <ul class="simple">
-<li>&#8220;method&#8221; - The HTTP method to use. Default is &#8220;GET&#8221;</li>
-<li>&#8220;params&#8221; - Provide parameters as table.</li>
-<li>&#8220;cookie&#8221; - The cookie to use.</li>
-<li>&#8220;http_version&#8221; - Set HTTP version. Default is HTTP1.1</li>
-<li>&#8220;use_gzip&#8221; - Use gzip compression. Default is true.</li>
-<li>&#8220;allow_redirects&#8221; - Allow or disallow redirects. Default is true.</li>
-<li>&#8220;max_redirects&#8221; - Maximum redirections allowed. Default is 4.</li>
-<li>&#8220;on_headers&#8221; - Callback to be called when assembling request HTTPHeaders instance. Called with <tt class="docutils literal"><span class="pre">turbo.httputil.HTTPHeaders</span></tt> as argument.</li>
-<li>&#8220;body&#8221; - Request HTTP body in plain form.</li>
-<li>&#8220;request_timeout&#8221; - Total timeout in seconds (including connect) for request. Default is 60 seconds.</li>
-<li>&#8220;connect_timeout&#8221; - Timeout in seconds for connect. Default is 20 secs.</li>
-<li>&#8220;auth_username&#8221; - Basic Auth user name.</li>
-<li>&#8220;auth_password&#8221; - Basic Auth password.</li>
-<li>&#8220;user_agent&#8221; - User Agent string used in request headers. Default is &#8220;Turbo Client vx.x.x&#8221;.</li>
+<li><tt class="docutils literal"><span class="pre">method</span></tt> - The HTTP method to use. Default is <tt class="docutils literal"><span class="pre">GET</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">params</span></tt> - Provide parameters as table.</li>
+<li><tt class="docutils literal"><span class="pre">cookie</span></tt> - The cookie to use.</li>
+<li><tt class="docutils literal"><span class="pre">http_version</span></tt> - Set HTTP version. Default is HTTP1.1</li>
+<li><tt class="docutils literal"><span class="pre">use_gzip</span></tt> - Use gzip compression. Default is true.</li>
+<li><tt class="docutils literal"><span class="pre">allow_redirects</span></tt> - Allow or disallow redirects. Default is true.</li>
+<li><tt class="docutils literal"><span class="pre">max_redirects</span></tt> - Maximum redirections allowed. Default is 4.</li>
+<li><tt class="docutils literal"><span class="pre">on_headers</span></tt> - Callback to be called when assembling request HTTPHeaders instance. Called with <tt class="docutils literal"><span class="pre">turbo.httputil.HTTPHeaders</span></tt> as argument.</li>
+<li><tt class="docutils literal"><span class="pre">body</span></tt> - Request HTTP body in plain form.</li>
+<li><tt class="docutils literal"><span class="pre">request_timeout</span></tt> - Total timeout in seconds (including connect) for request. Default is 60 seconds.</li>
+<li><tt class="docutils literal"><span class="pre">connect_timeout</span></tt> - Timeout in seconds for connect. Default is 20 secs.</li>
+<li><tt class="docutils literal"><span class="pre">auth_username</span></tt> - Basic Auth user name.</li>
+<li><tt class="docutils literal"><span class="pre">auth_password</span></tt> - Basic Auth password.</li>
+<li><tt class="docutils literal"><span class="pre">user_agent</span></tt> - User Agent string used in request headers. Default is <tt class="docutils literal"><span class="pre">Turbo</span> <span class="pre">Client</span> <span class="pre">vx.x.x</span></tt>.</li>
 </ul>
 </dd></dl>
 
@@ -237,8 +239,8 @@ at a time. If multiple request should be sent then create multiple instances.</p
   <p class="topless"><a href="web.html"
                         title="previous chapter">turbo.web &#8211; Core web framework</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="ioloop.html"
-                        title="next chapter">turbo.ioloop &#8211; Main I/O Loop</a></p>
+  <p class="topless"><a href="websocket.html"
+                        title="next chapter">turbo.websocket &#8211; WebSocket server and client</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/async.txt"
@@ -268,7 +270,7 @@ at a time. If multiple request should be sent then create multiple instances.</p
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="ioloop.html" title="turbo.ioloop – Main I/O Loop"
+          <a href="websocket.html" title="turbo.websocket – WebSocket server and client"
              >next</a> |</li>
         <li class="right" >
           <a href="web.html" title="turbo.web – Core web framework"

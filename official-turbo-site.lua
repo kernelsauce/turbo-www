@@ -5,30 +5,20 @@ local turbo = require "turbo"
 local tmpl = turbo.web.Mustache.TemplateHelper("./")
 local SFH = turbo.web.StaticFileHandler
 
-local Index = class("Index", turbo.web.RequestHandler)
-function Index:get()
-    local index = tmpl:load("index.mustache")
-    local page = tmpl:render(index, {
-        menu = tmpl:render("menu.mustache"), 
+local TemplateRenderer = class("TemplateRenderer", turbo.web.RequestHandler)
+function TemplateRenderer:get()
+    local page = tmpl:render(self.options, {
         foot = tmpl:render("foot.mustache"), 
         head = tmpl:render("header.mustache")
     })
     self:write(page)
 end
 
-local TemplateRenderer = class("TemplateRenderer", turbo.web.RequestHandler)
-function TemplateRenderer:get()
-    local page = tmpl:render(self.options)
-    self:write(page)
-end
-
 local app = turbo.web.Application({
-    {"^/$",             Index},
-    {"^/performance$",  TemplateRenderer,   "performance.mustache"},
-    {"^/lua$",          TemplateRenderer,   "lua.mustache"},
+    {"^/$",             TemplateRenderer,   "index.mustache"},
+    {"^/about$",        TemplateRenderer,   "about.mustache"},
     {"^/community$",    TemplateRenderer,   "community.mustache"},
-    {"^/download$",     TemplateRenderer,   "download.mustache"},
-    {"^/code$",         TemplateRenderer,   "code.mustache"},
+    {"^/contact$",      TemplateRenderer,   "contact.mustache"},
     {"^/modules$",      TemplateRenderer,   "modules.mustache"},
     {"^/sponsor$",      TemplateRenderer,   "sponsor.mustache"},
     -- End of templates.

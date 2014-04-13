@@ -1,14 +1,13 @@
 {{{head}}}
-{{{menu}}}
+
 <div class="container-narrow-spaced">
-    <img src="assets/turbo.png">
-    <h2>What?</h2>
+    <h2 class="blue">What?</h2>
     <p>Turbo.lua is just another framework to create network programs for Linux. It uses
     kernel event polling to manage network connections instead of the traditional concurency models that employ threads.
     As it does not use threads, no locks, mutexes or other bad things are required. It solves the same issues as Node.js, Tornado etc. except it solves it with Lua. A simple, yet powerful language that fits nicely with the event polling model with its builtin coroutines.
     </p>
 
-    <h2>Why?</h2>
+    <h2 class="blue">Why?</h2>
     <p>Many people has asked me (John Abrahamsen, creator of Turbo.lua) this. Why create yet another networking framework... There is probably already millions of them? Well the idea sprung to mind when I were programming some web management console for 
         a embedded product using the Tornado Framework. 
     </p>
@@ -21,11 +20,11 @@
     </p>
     <p>The project originally started out with only myself, but as the v.1.0 Beta were released some contributors started appearing.
     </p>
-    <h2>The name</h2>
+    <h2 class="blue">The name</h2>
     <img src="assets/turbo_cutaway.jpg" height="200px"></img><br /><br />
     <p>Turboes are used on internal combustion engines to pressurize the inlet air by feeding of the hot exhaust gasses, thereby creating more power and also making the engine more fuel efficient. This represents the framework quite nicely. The framework AND your application is JIT compiled to maximize performance and effiency at runtime, thereby "turbo charging". Quite lame yes, but also a little cool. </p>
     
-    <h2>The C10K problem</h2>
+    <h2 class="blue">The C10K problem</h2>
     <p>You may have heard about this before, anyways lets do it all again... </p>
         
     <p>Traditionally web servers (HTTP, FTP, and others) have either created a thread or even forked on
@@ -35,7 +34,7 @@
     simplifying the work of managing which connection gets what and at the right time by simple blocking execution until the work is completed. Though it's 
     not really a cheap way of managing sockets. Such a solution can simply not handle a big amount of open connections without big bucks hardware.</p>
 
-    <h2>Kernel event polling</h2>
+    <h2 class="blue">Kernel event polling</h2>
     <p>epoll, kqueue, /dev/poll, select, these are the names of the different operating systems solutions to this problem. They all work by letting the operating system kernel do the work of scheduling I/O operations and
         notifying the user application when there is e.g incoming data on a socket, or when a socket is ready to recieve more data. The kernel does (hopefully)
         not create threads when it does this. The different event notifications can then be handled by the user application, which needs to know what kind of 
@@ -53,7 +52,7 @@
         LuaJIT will free unused memory back to the operating system unlike Python which will keep it allocated for later use.
     </p>
 
-    <h2>Asynchronous programming</h2>
+    <h2 class="blue">Asynchronous programming</h2>
     <p>
         Although most frameworks does a great job of hiding what's going on under the hood, most developers coming from e.g
         in-sync environments will notice that the way of programming async, especially when communicating with other processes such as a database, is unfamiliar.
@@ -70,7 +69,7 @@
         condition to become true. Coroutines is cheap as dirt, and must not be mixed with real OS threads.
     </p>
 
-    <h2>Who needs this?</h2>
+    <h2 class="blue">Who needs this?</h2>
     <p>First and foremost the framework is aimed at the HTTP(S) protocol. This means web developers and HTTP API developers will be the
         first class citizens. But the framework contains generic nuts and bolts such as; a I/O loop, IO Stream classes, customizeable TCP (with SSL) server classes giving
         it value for everyone doing any kind of high performance network application. It will also speak directly to your exising C libraries, and happily also create native
@@ -81,30 +80,9 @@
         Perfect for small devices running cheap CPU's on battery power as well as your pay per use Amazon cluster.
     </p>
 
-    <h2>License</h2>
+    <h2 class="blue">License</h2>
     <p>The framework and the API documentation is licensed under the permissive Apache License, Version 2.0 which should be appropriate for everyone.
     </p>
-
-    {{!<h1>Lua lang</h1><br />
-    <p class="well"><strong>"Lua is a powerful, fast, lightweight, embeddable scripting language."</strong> quote Lua.org</p>
-    <p>So like many others you probably are not too familiar with Lua (not LUA). There a lots of tutorials and the language itself is fairly simple.</p>
-    <p>I would recommend starting out with one or both of these fabolous tutorials:</p>
-    <ul>
-        <li>
-            <a href="http://tylerneylon.com/a/learn-lua/?utm_source=buffer&utm_campaign=Buffer&utm_content=bufferebd2c&utm_medium=twitter">Learn Lua in 15 minutes</a>
-        </li>
-        <li>
-            <a href="http://luatut.com">luatut.com</a>
-        </li>
-    </ul>
-    <p>And as a good fallback you have the very thorough official "Programming in Lua".</p>
-    <p><a href="http://www.lua.org/pil/1.html">Lua.org Programming in Lua</a></p>
-    <p>Turbo.lua must be run with LuaJIT. This means you can also draw from the extensions it offers. Read up on them at the official LuaJIT site.</p>
-    <p><a href="http://luajit.org/extensions.html">LuaJIT.org extensions</a></p>
-    <p>Lua has its own package manager, much like <i>pip</i> for Python and <i>npm</i> for Node, it is called <strong>luarocks</strong>. Luarocks is the preffered way of creating
-     packages for Lua. You can browse the packages available at:</p>
-    <p><a href="http://luarocks.org/repositories/rocks/">Main LuaRocks server</a></p>
-    <h1>. . .</h1>}}
     <h1>. . .</h1>
 </div>
 {{{foot}}}

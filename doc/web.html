@@ -285,6 +285,22 @@ not exist.</p>
 
 <dl class="function">
 <dt>
+<tt class="descname">RequestHandler:get_json(force)</tt></dt>
+<dd><p>Returns JSON request data as a table. By default, it only parses request with &#8220;application/json&#8221; as content-type header.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>force</strong> (<em>Boolean</em>) &#8211; If force is set to true, all request will be parsed regardless of content-type header.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">Table or nil</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
 <tt class="descname">RequestHandler:get_cookie(name, default)</tt></dt>
 <dd><p>Get cookie value from incoming request.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -579,7 +595,7 @@ do this:</p>
 5
 6
 7</pre></div></td><td class="code"><div class="highlight"><pre>     <span class="k">function</span> <span class="nf">MyHandler</span><span class="p">:</span><span class="n">get</span><span class="p">()</span>
-         <span class="kd">local</span> <span class="n">item</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">get_argument</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">item&quot;</span><span class="p">)</span>
+         <span class="kd">local</span> <span class="n">item</span> <span class="o">=</span> <span class="n">self</span><span class="p">:</span><span class="n">get_argument</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">item&quot;</span><span class="p">)</span>
           <span class="k">if</span> <span class="ow">not</span> <span class="n">find_in_store</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">then</span>
               <span class="nb">error</span><span class="p">(</span><span class="n">turbo</span><span class="p">.</span><span class="n">web</span><span class="p">.</span><span class="n">HTTPError</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s">Could not find item in store&quot;</span><span class="p">))</span>
           <span class="k">end</span>
@@ -621,13 +637,13 @@ in memory it is ok.</p>
 <span class="p">})</span>
 </pre></div>
 </div>
-<p>Paths are not checked until intial hit on handler. It is then cached in memory.
+<p>Paths are not checked until intial hit on handler. The file is then cached in memory if it is a valid path.
 Notice that paths postfixed with / indicates that it should be treated as a directory. Paths with no / is treated
 as a single file.</p>
 </div>
 <div class="section" id="redirecthandler-class">
 <h2>RedirectHandler class<a class="headerlink" href="#redirecthandler-class" title="Permalink to this headline">¶</a></h2>
-<p>Static redirect handler that simple redirect the client to the given
+<p>A simple redirect handler that simply redirects the client to the given
 URL in 3rd argument of a entry in the Application class&#8217;s routing table.</p>
 <div class="highlight-lua"><div class="highlight"><pre><span class="kd">local</span> <span class="n">application</span> <span class="o">=</span> <span class="n">turbo</span><span class="p">.</span><span class="n">web</span><span class="p">.</span><span class="n">Application</span><span class="p">({</span>
     <span class="p">{</span><span class="s2">&quot;</span><span class="s">^/redirector$&quot;</span><span class="p">,</span> <span class="n">turbo</span><span class="p">.</span><span class="n">web</span><span class="p">.</span><span class="n">RedirectHandler</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s">http://turbolua.org&quot;</span><span class="p">}</span>
@@ -675,7 +691,7 @@ handler pattern&#8217;s only the first handler matched is delegated the request.
 <p>Keyword arguments supported:</p>
 <ul class="simple">
 <li>&#8220;default_host&#8221; (String) - Redirect to this URL if no matching handler is found.</li>
-<li>&#8220;cookie_secret&#8221; (String) - Sequence of bytes used for to sign cookies.</li>
+<li>&#8220;cookie_secret&#8221; (String) - Sequence of bytes used to sign secure cookies.</li>
 </ul>
 </dd></dl>
 
@@ -710,22 +726,16 @@ method.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>port</strong> (<em>Number</em>) &#8211; TCP port to bind server to.</li>
-<li><strong>address</strong> (<em>Number</em>) &#8211; Optional address to bind server to. Use <tt class="docutils literal"><span class="pre">turbo.socket.htonl()</span></tt> to create address. We use the unsigned integer hostlong format of the IP.</li>
-<li><strong>kwargs</strong> (<em>Table</em>) &#8211; Keyword arguments</li>
+<li><strong>port</strong> (<em>Number</em>) &#8211; Port to bind server to.</li>
+<li><strong>address</strong> (<em>String or number.</em>) &#8211; Address to bind server to. E.g &#8220;127.0.0.1&#8221;.</li>
+<li><strong>kwargs</strong> (<em>Table</em>) &#8211; Keyword arguments passed on to <tt class="docutils literal"><span class="pre">turbo.httpserver.HTTPServer</span></tt>. See documentation for available options. This is used to set SSL certificates amongst other things.</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
-<p>Available keyword arguments:</p>
-<ul class="simple">
-<li>&#8220;key_file&#8221; (String) - Path to SSL key file if a SSL enabled server is wanted.</li>
-<li>&#8220;cert_file&#8221; (String) - Path to certificate file. key_file must also be set.</li>
-</ul>
 </dd></dl>
 
-<p><em>Note: If you are going to use SSL the global _G.TURBO_SSL must be set to true!</em></p>
 <dl class="function">
 <dt>
 <tt class="descname">Application:set_server_name(name)</tt></dt>

@@ -27,7 +27,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="Turbo.lua 1.0.0 documentation" href="index.html" />
     <link rel="next" title="turbo.iostream – High-level asynchronous streaming sockets" href="iostream.html" />
-    <link rel="prev" title="turbo.async – Asynchronous clients" href="async.html" /> 
+    <link rel="prev" title="turbo.websocket – WebSocket server and client" href="websocket.html" /> 
   </head>
   <body>
     <div class="related">
@@ -40,7 +40,7 @@
           <a href="iostream.html" title="turbo.iostream – High-level asynchronous streaming sockets"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="async.html" title="turbo.async – Asynchronous clients"
+          <a href="websocket.html" title="turbo.websocket – WebSocket server and client"
              accesskey="P">previous</a> |</li>
         <li><a href="index.html">Turbo.lua 1.0.0 documentation</a> &raquo;</li> 
       </ul>
@@ -163,25 +163,14 @@ and time interval callbacks. Heavily influenced by ioloop.py in the Tornado web 
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>callback</strong> (<em>Function</em>) &#8211; A function to be called on next iteration.</li>
 <li><strong>arg</strong> &#8211; Optional argument for callback. Callback is called with this as first argument if set.</li>
 </ul>
 </td>
 </tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt>
-<tt class="descname">IOLoop:list_callbacks()</tt></dt>
-<dd><p>Returns all current callbacks in the IO Loop.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Table</td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">IOLoop class. Returns self for convinience.</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -306,8 +295,8 @@ on time. See the note at beginning of this section.</p>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="async.html"
-                        title="previous chapter">turbo.async &#8211; Asynchronous clients</a></p>
+  <p class="topless"><a href="websocket.html"
+                        title="previous chapter">turbo.websocket &#8211; WebSocket server and client</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="iostream.html"
                         title="next chapter">turbo.iostream &#8211; High-level asynchronous streaming sockets</a></p>
@@ -343,7 +332,7 @@ on time. See the note at beginning of this section.</p>
           <a href="iostream.html" title="turbo.iostream – High-level asynchronous streaming sockets"
              >next</a> |</li>
         <li class="right" >
-          <a href="async.html" title="turbo.async – Asynchronous clients"
+          <a href="websocket.html" title="turbo.websocket – WebSocket server and client"
              >previous</a> |</li>
         <li><a href="index.html">Turbo.lua 1.0.0 documentation</a> &raquo;</li> 
       </ul>

@@ -48,25 +48,28 @@
           <div class="body">
             
   <img alt="_images/turbo.png" src="_images/turbo.png" />
-<p>This is the documentation for Turbo.lua version 1.0.0.</p>
+<p>This is the documentation for Turbo.lua version 1.1.0.</p>
 <div class="section" id="introduction">
 <h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
-<p>Turbo.lua is a Lua module / toolkit (whatever) for developing web applications in Lua. It is different from all the other Lua HTTP servers out there in that it&#8217;s modern, fresh, object oriented and easy to modify. No pun intended!
-It is written in pure Lua, there are no Lua C modules instead it uses the LuaJIT FFI to do socket and event handling. Users of the Tornado web server will recognize the API offered pretty quick.
-If you do not know Lua then do not fear as its probably one of the easiest languages to learn if you know C, Python or Javascript from before.</p>
-<p>Turbo.lua is non-blocking and a features a extremely fast light weight web server. The framework is good for REST APIs, traditional HTTP requests and open connections like Websockets because of its event driven nature.</p>
-<p>What sets Turbo.lua apart from the other evented driven servers out there, is that it is the fastest, most scalable and has the smallest footprint of them all. This is thanks to the excellent work done on LuaJIT.</p>
-<p>Its main features and design principles are:</p>
+<p>Turbo.lua is a framework built for LuaJIT 2 to simplify the task of building fast and scalable network applications. It uses a event-driven, non-blocking, no thread design to deliver excellent performance and minimal footprint to high-load applications while also providing excellent support for embedded uses. The toolkit can be used for HTTP REST API&#8217;s, traditional dynamic web pages through templating, open connections like WebSockets, or just as high level building blocks for native speed network applications.</p>
+<p>First and foremost the framework is aimed at the HTTP(S) protocol. This means web developers and HTTP API developers are the first class citizens. But the framework contains generic nuts and bolts such as; a I/O loop, IO Stream classes, customizeable TCP (with SSL) server classes giving it value for everyone doing any kind of high performance network application. It will also speak directly to your exising C libraries, and happily also create native C struct&#8217;s for the ultimate memory and CPU performance.</p>
+<p>Keep in mind that running this with LuaJIT provides you with roughly the speed of compiled C code with only a fraction of the development time. Perfect for small devices running cheap CPU&#8217;s on battery power as well as your pay per use Amazon cluster.</p>
+<p>LuaJIT 2 is REQUIRED, PUC-RIO Lua is unsupported.</p>
+<p>API Documentation is available at <a class="reference external" href="http://turbolua.org/doc/">http://turbolua.org/doc/</a></p>
+<p>It&#8217;s main features and design principles are:</p>
 <ul class="simple">
-<li>Simple and intuitive API (much like Tornado)</li>
+<li>Simple and intuitive API (much like Tornado).</li>
+<li>Low-level operations is possible if the users wishes that.</li>
+<li>Implemented in straight Lua and LuaJIT FFI, so the user can study and modify inner workings without too much effort.</li>
 <li>Good documentation</li>
-<li>No dependencies, except for LuaJIT the Just-In-Time compiler for Lua.</li>
 <li>Event driven, asynchronous and threadless design</li>
-<li>Extremely fast with LuaJIT</li>
-<li>Written completely in pure Lua</li>
-<li>Linux Epoll support</li>
 <li>Small footprint</li>
+<li>SSL support (requires OpenSSL or axTLS)</li>
 </ul>
+</div>
+<div class="section" id="supported-architectures">
+<h1>Supported Architectures<a class="headerlink" href="#supported-architectures" title="Permalink to this headline">¶</a></h1>
+<p>x86, x64, ARM, PPC</p>
 </div>
 <div class="section" id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
@@ -101,6 +104,10 @@ easy to learn if you are used to Python, Java or C++.</p>
 <li class="toctree-l2"><a class="reference internal" href="get_started.html#json-output">JSON Output</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Asynchronous modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#overview">Overview</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -133,6 +140,15 @@ easy to learn if you are used to Python, Java or C++.</p>
 <li class="toctree-l2"><a class="reference internal" href="async.html#utilities-for-coroutines">Utilities for coroutines</a></li>
 <li class="toctree-l2"><a class="reference internal" href="async.html#httpclient-class">HTTPClient class</a></li>
 <li class="toctree-l2"><a class="reference internal" href="async.html#httpresponse-class">HTTPResponse class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="websocket.html">turbo.websocket &#8211; WebSocket server and client</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="websocket.html#websocketstream-mixin">WebSocketStream mixin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="websocket.html#websockethandler-class">WebSocketHandler class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="websocket.html#websocketclient-class">WebSocketClient class</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="websocket.html#description-of-the-callback-functions">Description of the callback functions</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="ioloop.html">turbo.ioloop &#8211; Main I/O Loop</a><ul>
@@ -187,6 +203,11 @@ easy to learn if you are used to Python, Java or C++.</p>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="log.html">turbo.log &#8211; Command-line log helper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="turbovisor.html">turbovisor &#8211; Application supervisor</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="turbovisor.html#options">Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turbovisor.html#examples">Examples</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -200,6 +221,7 @@ easy to learn if you are used to Python, Java or C++.</p>
   <h3><a href="#">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Introduction</a></li>
+<li><a class="reference internal" href="#supported-architectures">Supported Architectures</a></li>
 <li><a class="reference internal" href="#installation">Installation</a></li>
 <li><a class="reference internal" href="#object-oriented-lua">Object oriented Lua</a></li>
 <li><a class="reference internal" href="#tutorials">Tutorials</a><ul>

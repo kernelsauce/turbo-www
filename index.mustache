@@ -1,235 +1,149 @@
 {{{head}}}
 
-<div id="back" class="hidden" style="position:fixed; cursor:pointer;">
-	<span class="glyphicon glyphicon-circle-arrow-left" style="font-size:80px;"></span>
-</div>
 <div id="topframe">
 	<div id="top" class="centered">
-		<img src="assets/turbo-invert.png" style="margin-top:10px;">
-		<p id="desc" class="container-narrow whitesmoke-text" style="line-height:180%;">
-			Turbo.lua is a framework built for LuaJIT 2 to simplify the task of building fast and scalable network applications. 
-			It uses a event-driven, non-blocking, no thread design to deliver excellent performance and minimal footprint to high-load 
-			applications while also providing excellent support for embedded uses.
-			
-			The toolkit can be used for HTTP REST API's, traditional web pages and open connections 
-			like Websockets, or just as high level building blocks for native speed network applications. 
-		</p>
-		<p class="whitesmoke-text">
-			It offers a high degree of freedom to do <b><i>whatever you want, your way.</i></b>
-		</p>
+		<h2 class="alegreya100">Simple. Fast. Brilliant.</h2>
+		<h3 class="alegreya100">Develop networking applications with Lua on Linux.</h3>
 	</div>
 	<div class="container-narrow-spaced">
 		<center>
-			<a class="btn btn-success btn-lg " 
+			<a class="btn btn-default btn-lg" 
 				href="https://github.com/kernelsauce/turbo/archive/v1.0.0.tar.gz">
 				<span class="glyphicon glyphicon-import"></span>
-				Download v1.0</a>
-		</center>
-	</div>
-	<div class="container-narrow-spaced">
-		<center>
-			<a class="btn btn-info btn-sm " href="doc/"><span class="glyphicon glyphicon-book"></span> API docs</a>
-			<a class="btn btn-info btn-sm " href="https://github.com/kernelsauce/turbo" target="_blank">
+				Download</a>
+			<a class="btn btn-default btn-lg" href="https://github.com/kernelsauce/turbo" target="_blank">
 				<span class="glyphicon glyphicon-zoom-in"></span>
 				View Github project</a>
+			
+			<p style="margin-top:15px;">
+				<a href="/doc/web.html" target="_blank">HTTP/HTTPS 1.1</a>, 
+				<a href="/doc/websocket.html" target="_blank">WebSocket</a>, 
+				<a href="/doc/web.html#mustache-templating" target="_blank">Mustache</a>, 
+				<a href="/doc/iostream.html" target="_blank">Evented IO</a>,
+				<a href="/doc/iostream.html#ssliostream-class" target="_blank">SSL</a>,
+				<a>High performance</a>,
+				<a>Apache 2.0 License</a>
+			</p>
 		</center>
-		
 	</div>
 </div>
-<br />
+
 <div class="container-spaced" id="content">
+		<div class="row margin-top-50">
+			<div class="col-md-6">
+		<pre><code>
+-- helloworld.lua
+local turbo = require "turbo"
 
-	<div class="row">
-	  <div class="col-md-7" id="content-left">
-	
-<h1>Hello World</h1>
-<p>Making a web server that responds with the canonical message is easy.
-	
-<pre class="code-snippet-sz"><code class="lua">local turbo = require "turbo"
-
--- Turbo.lua is object oriented, and you define your 
--- "request handler" class so that it inherits everything 
--- from the turbo.web.RequestHandler.
-local ExampleHandler = class("ExampleHandler", 
+local MyApp = class("MyApp", 
 	turbo.web.RequestHandler)
 
-function ExampleHandler:get()
-	-- All valid HTTP GET requests calls this user defined
-	-- method. Getting request arguments, request header fields, 
-	-- setting header fields in response, sending data either
-	-- chunked or buffered and whole lot of other things
-	-- is done via the self object.
-	self:write("Hello world!")
-end
-
-function ExampleHandler:post()
-	-- To no suprise by defining a post method in the request 
-	-- handler you will now also be able to handle post requests.
+function MyApp:get()
+    self:write("Hello World!")
 end
 
 turbo.web.Application({
-	-- Using patterns to instruct what requests go where.
-	{"^/$", ExampleHandler}
+	{"^/$", MyApp}
 }):listen(8888)
+turbo.ioloop.instance():start()
+		</code></pre>
+			</div>
+			<div class="col-md-6" style="line-height:180%;">			
+				<h2 class="blue">
+					Create apps
+				</h2>
+				<p> Turbo provides you with all the stuff you need to develop fast web apps, web API's and
+					networking applications.
+				</p>
+				<p>
+					Web application classes are modeled after Google's webapp, you should quickly feel right at home.
+				</p>
+				<p>
+					The rest of the API's of the framework is very close to that of Python's Tornado framework.
+				</p>
+			</div>
+		</div>
 
-turbo.ioloop.instance():start()</code></pre>
-	<p>Start the application by executing:</p>
-	<pre class="code-snippet-sz">luajit helloworld.lua</pre>
-	<p>Creating a WebSocket RFC6455 is equally simple.</p>
-<pre class="code-snippet-sz"><code class="lua">_G.TURBO_SSL = true  -- Load Turbo with SSL.
+
+		<div class="row margin-top-50">
+			<div class="col-md-6">
+				<h2 class="blue">
+					Effeciency
+				</h2>
+				<p>LuaJIT is a Just-In-Time Compiler (JIT) for the Lua programming language being used by the complete Turbo framework. This means that your code is optimized and compiled for the native architecture it runs on, thereby reducing hardware requirements (or pay-per-use CPUs) compared to other frameworks (such as Django or Tornado).</p>
+				<p>Great for reducing your costs, power usage and producing a smaller impact on the environment.</p>			
+			</div>
+			<div class="col-md-6" style="line-height:180%;">			
+				<span class="glyphicon glyphicon-tree-deciduous" style="font-size: 300px; color:green;"></span>
+
+			</div>
+		</div>
+
+
+		<h2 class="blue margin-top-50">Interactive mode</h2>
+		<p>When developing your app you get good feedback on what is going on directly in your shell.</p>
+		<pre><code style="color:green;">
+[S 2014/04/13 16:08:37] [web.lua] 200 OK GET / (127.0.0.1) 0ms
+		</code></pre>
+
+		<div class="row margin-top-50">
+			<div class="col-md-6">
+		<pre><code>
+-- websocket.lua
+_G.TURBO_SSL = true
 local turbo = require "turbo"
 
 local WSExHandler = class("WSExHandler", 
-	turbo.websocket.WebSocketHandler)
+    turbo.websocket.WebSocketHandler)
 
 function WSExHandler:on_message(msg)
-	-- This method is defined by the developer and recieves 
-	-- every message which comes in on socket as a argument.
-    self:write_message("You said:" .. msg)
-    -- In this case we are simply repeating the clients message.
+    self:write_message("Hello World.")
 end
 
-turbo.web.Application({ {"^/ws$", WSExHandler} }):listen(8888)
-turbo.ioloop.instance():start()</code></pre>
-
-<p>A simple SMTP server using Lua coroutines, the TCPServer class 
-	and the IOStream class.</p>
-
-<pre class="code-snippet-sz"><code class="lua">
-local turbo = require "turbo"
-local IOStream = turbo.iostream.IOStream
- 
-SMTP_PORT = 8399
- 
---- Create a new class which inherits from TCPServer.
-local SMTPServ = class("SMTPServ", turbo.tcpserver.TCPServer)
-
-
-function SMTPServ:handle_stream(stream)
-  -- Move execution out of handler context.
-  self.smtp_stream = stream
-  print("New SMTP connection.")
-  self.io_loop:add_callback(self._handle_smtp_protocol, self)
-end
-
-
-function SMTPServ:_handle_smtp_protocol()
-  local recipients = {}
-  local stream = self.smtp_stream
-  
-  -- Greet
-  stream:write("220 smtp.mydomain.com ESMTP Fakefix\r\n")
-
-  -- Get client hostname. Some clients like to ask for extensions...
-  ::greet::
-  local helo_line = coroutine.yield(turbo.async.task(
-  	IOStream.read_until, stream, "\r\n"))
-  -- Yielding here has the effect that the function will halt and the I/O Loop 
-  -- will schedule this thread to be resumed with full context when the 
-  -- I/O Stream instance has read the defined delimiter (CRLF).
-
-  if helo_line:lower():match("ehlo") then
-    -- We do not like EHLO extensions, retry with HELO my friend.
-    stream:write(string.format("550 Not implemented\r\n"))
-    goto greet
-  elseif helo_line:lower():match("helo") then
-    local hostname = helo_line:substr(5, helo_line:len() - 2)
-    stream:write(
-      string.format("250 Hello %s, I am glad to meet you\r\n", hostname))
-  end
- 
-  -- Get addresses for the incoming e-mail, or handle the QUIT keyword.
-  ::mailrequest::
-  local from_line = coroutine.yield(turbo.async.task(
-    IOStream.read_until, stream, "\r\n"))
-  local from_email = from_line:match("<(.*)>")
-  if from_line:lower():match("quit") then
-    self.closing = true
-    stream:write("221 Bye\r\n")
-    stream:close()
-    turbo.log.devel("SMTP connection closed.")
-    return
-  end
-  assert(from_email, "Invalid SMTP protocol.")
-  stream:write(string.format("250 %s\r\n", from_email))
-
-  -- Get recipients.
-  local msg
-  while true do
-    msg = coroutine.yield(turbo.async.task(
-      IOStream.read_until, stream, "\r\n"))
-    local recipient = msg:match("<(.*)>")
-    if recipient then
-      stream:write("250 Ok\r\n")
-      recipients[#recipients+1] = recipient
-    else
-      break
-    end
-  end
-  -- Except DATA to be in stream.
-  assert(msg:lower():match("data"), "Invalid SMTP protocol.")
-  stream:write("354 End data with <CR><LF>.<CR><LF>\r\n")
-  -- Get body.
-  local body = coroutine.yield(turbo.async.task(
-    IOStream.read_until, stream, "\r\n.\r\n"))
-  stream:write("250 Ok\r\n")
-  
-
-  -- Do whatever you like with the results. 
-  -- You could add e.g a subscribe feature.
-  print("Recipients: ", turbo.util.join(",", recipients))
-  print("Message body: ", body)
-  
-  recipients = {}
-  -- May be using keep alive connection.
-  -- Go back and wait for more data.
-  goto mailrequest
-end
-
--- Create a class instance and use the inherited method :listen
--- and then start the I/O Loop.
-local SMTP = SMTPServ() 
-SMTP:listen(SMTP_PORT)
+turbo.web.Application({
+	{"^/ws$", WSExHandler}
+}):listen(8888)
 turbo.ioloop.instance():start()
-</code></pre>
 
-</div>
+		</code></pre>
+			</div>
+			<div class="col-md-6" style="line-height:180%;">			
+				<h2 class="blue">
+					WebSockets
+				</h2>
+				<p>
+					Create rich apps using WebSockets. The WebSockets handler provides a simple API and blends
+					nicely in together with your other HTTP handlers.
+				</p>
+				<p>
+					Web application classes are modeled after Google's webapp, you should quickly feel right at home.
+				</p>
+			</div>
+		</div>
 
-<div class="col-md-4 menu-container" id="content-right">
-	<div class="menu-item menu-item-selected" url="/code">
-		<h1><span class="glyphicon glyphicon-edit" style="font-size:20px"></span> Code examples</h1>
-		<p>Just some simple code examples and teasers.</p>
-	</div>
+		<div class="row margin-top-50">
+			<div class="col-md-6">
+				<h2 class="blue margin-top-50">Coroutines</h2>
+				<p>
+					Lua has built-in coroutines. This makes it possible to yield a request at a certain point 
+					waiting for something to finish (e.g a database lookup) and resume the function (coroutine) at that point with the results delivered in a variable. This means NO callbacks are required for async operations.
+				</p>
+			</div>
+			<div class="col-md-6" style="line-height:180%;">
+		<pre><code>
+-- redis.lua
+-- pseudo code
 
-	<div class="menu-item" url="/lua">
-		<h1><span class="glyphicon glyphicon-info-sign" style="font-size:20px"></span> About</h1>
-		<p>A quick technical overview.</p>
-	</div>
+function MyApp:get(id)
+   local val = coroutine.yield(redis:get(id))
+   self:write({result = val})
+end
+		</code></pre>
+			</div>
+		</div>
 
-	<div class="menu-item" url="/doc/" target="blank">
-		<h1><span class="glyphicon glyphicon-file" style="font-size:20px"></span> Documentation</h1>
-		<p>Official API documentation for the core framework.</p>
-	</div>
 
-	<div class="menu-item" url="/doc/get_started.html" target="blank">
-		<h1><span class="glyphicon glyphicon-expand" style="font-size:20px"></span> Getting started</h1>
-		<p>How do you get started?</p>
-	</div>
 
-	<div class="menu-item" url="/modules">
-		<h1><span class="glyphicon glyphicon-certificate" style="font-size:20px"></span> Modules</h1>
-		<p>Browse native modules for Turbo.lua.</p>
-	</div>
-
-	<div class="menu-item" url="/community">
-		<h1><span class="glyphicon glyphicon-comment" style="font-size:20px"></span> Community</h1>
-		<p>Get in touch with others that use Turbo.lua.</p>
-	</div>
-
-	<div class="menu-item" url="/sponsor">
-		<h1><span class="glyphicon glyphicon-question-sign" style="font-size:20px"></span> Sponsor</h1>
-		<p>Missing a feature or module?</p>
-	</div>
 </div>
 
 </div>
