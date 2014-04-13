@@ -1,0 +1,304 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Asynchronous modules &mdash; Turbo.lua 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Turbo.lua 1.0.0 documentation" href="index.html" />
+    <link rel="next" title="Turbo.lua API Versioning" href="apiref.html" />
+    <link rel="prev" title="Get Started With Turbo" href="get_started.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="apiref.html" title="Turbo.lua API Versioning"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="get_started.html" title="Get Started With Turbo"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Turbo.lua 1.0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="asynchronous-modules">
+<span id="modules"></span><h1>Asynchronous modules<a class="headerlink" href="#asynchronous-modules" title="Permalink to this headline">¶</a></h1>
+<p>Using native modules instead of generic Lua modules are important when using sockets to communicate with e.g databases
+to get the best performance, since the generic modules will block during long operations. If the operations you are
+doing are relatively fast then you may get away with using a generic module. This is something you have to benchmark yourself
+in your specific cases.</p>
+<p>Creating modules for Turbo using the highly abstracted IOStream classes is real easy. If there is not a driver for e.g a database
+etc available then please do try to make it.</p>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>There are many ways of implementing async modules in Turbo.lua. To list the most apparent:</p>
+<ul class="simple">
+<li>Using callbacks</li>
+<li>Using Coroutine wrappable functions</li>
+<li>Using Coroutines and the CoroutineContext class</li>
+</ul>
+<p>Which one suits your module best is up to your. Know that at the time of writing, no functions within the Lua Coroutine namespace
+is inlined by LuaJIT. Instead it fallbacks to the very fast interpreter. So if every little performance matters then callbacks
+are the way to go. All of the modules in the core framework uses Coroutine wrappable functions, except the HTTPClient, which uses
+coroutines and the CoroutineContext class.</p>
+<p>Callback based modules is probably the flavour that most have used before. Basically you take in a callback
+(and maybe a callback argument/userdata) as argument(s) for the functions of your module. This function is then called when I/O
+has been completed. This means the user of your module must either split his program flow into seperate functions (seemingly in parts)
+or create closures inside functions.</p>
+<p>Coroutine wrappable functions means that the functions of your API strictly adhers to the convention where the last two arguments of a
+functions always are a callback AND a callback argument (the argument is passed as first argument into the provided callback when it is
+called on I/O completion). If, and only if these requirements are met, the users of your module may use the <tt class="docutils literal"><span class="pre">turbo.async.task</span></tt> function
+to wrap the function and use the builtin Lua yield functionality. These functions then supports both callback-style and yield-style programming.</p>
+<p>Coroutine directly with the CoroutineContext class does not offer a callback compatible API, and the users of the module must always yield
+to the I/O loop. This has some advantages in that it creates a 100% &#8220;I don&#8217;t care about this async stuff&#8221; environment.</p>
+<p>Programmatically this can be illustrated as follows:</p>
+<p>&#8220;I don&#8217;t care about this async stuff&#8221; module:</p>
+<div class="highlight-lua"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14</pre></div></td><td class="code"><div class="highlight"><pre> <span class="kd">local</span> <span class="n">turbo</span> <span class="o">=</span> <span class="nb">require</span> <span class="s2">&quot;</span><span class="s">turbo&quot;</span>
+ <span class="kd">local</span> <span class="n">turboredis</span> <span class="o">=</span> <span class="nb">require</span> <span class="s2">&quot;</span><span class="s">turbo-redis&quot;</span>
+ <span class="kd">local</span> <span class="n">rconn</span> <span class="o">=</span> <span class="n">turboredis</span><span class="p">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">127.0.0.1&quot;</span><span class="p">,</span> <span class="mi">1337</span><span class="p">)</span>
+
+ <span class="kd">local</span> <span class="n">ExampleHandler</span> <span class="o">=</span> <span class="n">class</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">ExampleHandler&quot;</span><span class="p">,</span> <span class="n">turbo</span><span class="p">.</span><span class="n">web</span><span class="p">.</span><span class="n">RequestHandler</span><span class="p">)</span>
+ <span class="k">function</span> <span class="nf">ExampleHandler</span><span class="p">:</span><span class="n">get</span><span class="p">()</span>
+     <span class="n">self</span><span class="p">:</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">The value is &quot;</span> <span class="o">..</span> <span class="n">rconn</span><span class="p">:</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">myvalue&quot;</span><span class="p">))</span>
+ <span class="k">end</span>
+
+ <span class="kd">local</span> <span class="n">application</span> <span class="o">=</span> <span class="n">turbo</span><span class="p">.</span><span class="n">web</span><span class="p">.</span><span class="n">Application</span><span class="p">({</span>
+     <span class="p">{</span><span class="s2">&quot;</span><span class="s">^/$&quot;</span><span class="p">,</span> <span class="n">ExampleHandler</span><span class="p">}</span>
+ <span class="p">})</span>
+ <span class="n">application</span><span class="p">:</span><span class="n">listen</span><span class="p">(</span><span class="mi">8888</span><span class="p">)</span>
+ <span class="n">turbo</span><span class="p">.</span><span class="n">ioloop</span><span class="p">.</span><span class="n">instance</span><span class="p">():</span><span class="n">start</span><span class="p">()</span>
+</pre></div>
+</td></tr></table></div>
+<p>Callback-type module:</p>
+<div class="highlight-lua"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17</pre></div></td><td class="code"><div class="highlight"><pre> <span class="kd">local</span> <span class="n">turbo</span> <span class="o">=</span> <span class="nb">require</span> <span class="s2">&quot;</span><span class="s">turbo&quot;</span>
+ <span class="kd">local</span> <span class="n">turboredis</span> <span class="o">=</span> <span class="nb">require</span> <span class="s2">&quot;</span><span class="s">turbo-redis&quot;</span>
+ <span class="kd">local</span> <span class="n">rconn</span> <span class="o">=</span> <span class="n">turboredis</span><span class="p">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">127.0.0.1&quot;</span><span class="p">,</span> <span class="mi">1337</span><span class="p">)</span>
+
+ <span class="kd">local</span> <span class="n">ExampleHandler</span> <span class="o">=</span> <span class="n">class</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">ExampleHandler&quot;</span><span class="p">,</span> <span class="n">turbo</span><span class="p">.</span><span class="n">web</span><span class="p">.</span><span class="n">RequestHandler</span><span class="p">)</span>
+ <span class="k">function</span> <span class="nf">ExampleHandler</span><span class="p">:</span><span class="n">get</span><span class="p">()</span>
+     <span class="kd">local</span> <span class="n">_self</span> <span class="o">=</span> <span class="n">self</span>
+     <span class="n">rconn</span><span class="p">:</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">myvalue&quot;</span><span class="p">,</span> <span class="n">function</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+         <span class="n">_self</span><span class="p">:</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">The value is &quot;</span> <span class="o">..</span> <span class="n">rconn</span><span class="p">:</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">myvalue&quot;</span><span class="p">))</span>
+     <span class="k">end</span><span class="p">)</span>
+ <span class="k">end</span>
+
+ <span class="kd">local</span> <span class="n">application</span> <span class="o">=</span> <span class="n">turbo</span><span class="p">.</span><span class="n">web</span><span class="p">.</span><span class="n">Application</span><span class="p">({</span>
+     <span class="p">{</span><span class="s2">&quot;</span><span class="s">^/$&quot;</span><span class="p">,</span> <span class="n">ExampleHandler</span><span class="p">}</span>
+ <span class="p">})</span>
+ <span class="n">application</span><span class="p">:</span><span class="n">listen</span><span class="p">(</span><span class="mi">8888</span><span class="p">)</span>
+ <span class="n">turbo</span><span class="p">.</span><span class="n">ioloop</span><span class="p">.</span><span class="n">instance</span><span class="p">():</span><span class="n">start</span><span class="p">()</span>
+</pre></div>
+</td></tr></table></div>
+<p>Callback-type module with callback argument and no closures, probably
+well known for those familiar with Python and Tornado.</p>
+<div class="highlight-lua"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18</pre></div></td><td class="code"><div class="highlight"><pre> <span class="kd">local</span> <span class="n">turbo</span> <span class="o">=</span> <span class="nb">require</span> <span class="s2">&quot;</span><span class="s">turbo&quot;</span>
+ <span class="kd">local</span> <span class="n">turboredis</span> <span class="o">=</span> <span class="nb">require</span> <span class="s2">&quot;</span><span class="s">turbo-redis&quot;</span>
+ <span class="kd">local</span> <span class="n">rconn</span> <span class="o">=</span> <span class="n">turboredis</span><span class="p">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">127.0.0.1&quot;</span><span class="p">,</span> <span class="mi">1337</span><span class="p">)</span>
+
+ <span class="k">function</span> <span class="nf">ExampleHandler</span><span class="p">:</span><span class="n">_process_request</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+     <span class="n">self</span><span class="p">:</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">The value is &quot;</span> <span class="o">..</span> <span class="n">data</span><span class="p">)</span>
+ <span class="k">end</span>
+
+ <span class="kd">local</span> <span class="n">ExampleHandler</span> <span class="o">=</span> <span class="n">class</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">ExampleHandler&quot;</span><span class="p">,</span> <span class="n">turbo</span><span class="p">.</span><span class="n">web</span><span class="p">.</span><span class="n">RequestHandler</span><span class="p">)</span>
+ <span class="k">function</span> <span class="nf">ExampleHandler</span><span class="p">:</span><span class="n">get</span><span class="p">()</span>
+     <span class="n">rconn</span><span class="p">:</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">myvalue&quot;</span><span class="p">,</span> <span class="n">ExampleHandler</span><span class="p">.</span><span class="n">_process_request</span><span class="p">,</span> <span class="n">self</span><span class="p">)</span>
+ <span class="k">end</span>
+
+ <span class="kd">local</span> <span class="n">application</span> <span class="o">=</span> <span class="n">turbo</span><span class="p">.</span><span class="n">web</span><span class="p">.</span><span class="n">Application</span><span class="p">({</span>
+     <span class="p">{</span><span class="s2">&quot;</span><span class="s">^/$&quot;</span><span class="p">,</span> <span class="n">ExampleHandler</span><span class="p">}</span>
+ <span class="p">})</span>
+ <span class="n">application</span><span class="p">:</span><span class="n">listen</span><span class="p">(</span><span class="mi">8888</span><span class="p">)</span>
+ <span class="n">turbo</span><span class="p">.</span><span class="n">ioloop</span><span class="p">.</span><span class="n">instance</span><span class="p">():</span><span class="n">start</span><span class="p">()</span>
+</pre></div>
+</td></tr></table></div>
+<p>Coroutine wrappable Callback-type module:</p>
+<div class="highlight-lua"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17</pre></div></td><td class="code"><div class="highlight"><pre> <span class="kd">local</span> <span class="n">turbo</span> <span class="o">=</span> <span class="nb">require</span> <span class="s2">&quot;</span><span class="s">turbo&quot;</span>
+ <span class="kd">local</span> <span class="n">turboredis</span> <span class="o">=</span> <span class="nb">require</span> <span class="s2">&quot;</span><span class="s">turbo-redis&quot;</span>
+ <span class="kd">local</span> <span class="n">task</span> <span class="o">=</span> <span class="n">turbo</span><span class="p">.</span><span class="n">async</span><span class="p">.</span><span class="n">task</span>
+ <span class="kd">local</span> <span class="n">yield</span> <span class="o">=</span> <span class="nb">coroutine.yield</span>
+
+ <span class="kd">local</span> <span class="n">rconn</span> <span class="o">=</span> <span class="n">turboredis</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">127.0.0.1&quot;</span><span class="p">,</span> <span class="mi">1337</span><span class="p">)</span>
+
+ <span class="kd">local</span> <span class="n">ExampleHandler</span> <span class="o">=</span> <span class="n">class</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">ExampleHandler&quot;</span><span class="p">,</span> <span class="n">turbo</span><span class="p">.</span><span class="n">web</span><span class="p">.</span><span class="n">RequestHandler</span><span class="p">)</span>
+ <span class="k">function</span> <span class="nf">ExampleHandler</span><span class="p">:</span><span class="n">get</span><span class="p">()</span>
+     <span class="n">self</span><span class="p">:</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">The value is &quot;</span> <span class="o">..</span> <span class="n">yield</span><span class="p">(</span><span class="n">task</span><span class="p">(</span><span class="n">turboredis</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">rconn</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s">myvalue&quot;</span><span class="p">))))</span>
+ <span class="k">end</span>
+
+ <span class="kd">local</span> <span class="n">application</span> <span class="o">=</span> <span class="n">turbo</span><span class="p">.</span><span class="n">web</span><span class="p">.</span><span class="n">Application</span><span class="p">({</span>
+     <span class="p">{</span><span class="s2">&quot;</span><span class="s">^/$&quot;</span><span class="p">,</span> <span class="n">ExampleHandler</span><span class="p">}</span>
+ <span class="p">})</span>
+ <span class="n">application</span><span class="p">:</span><span class="n">listen</span><span class="p">(</span><span class="mi">8888</span><span class="p">)</span>
+ <span class="n">turbo</span><span class="p">.</span><span class="n">ioloop</span><span class="p">.</span><span class="n">instance</span><span class="p">():</span><span class="n">start</span><span class="p">()</span>
+</pre></div>
+</td></tr></table></div>
+<p>The easiest to use is probably the first, where the program flow and code paths are more easily
+followed. The builtin HTTPClient uses this style of API... It is probably also a good choice for
+database queries etc, so you can keep your logic clean and easy to follow.</p>
+<p>All callbacks added to the I/O loop are executed in its own coroutine. The callback functions can yield
+execution back to the I/O loop. Lua yield&#8217;s can return a object as it return to where the coroutine where
+started... This is utilized in the Turbo.lua I/O loop which will treat yields different based on what they
+return as they yield. The I/O Loop supports these returns:</p>
+<ul class="simple">
+<li>A function, that will be called on next iteration and its results returned when resuming the coroutine thread.</li>
+<li>Nil, a empty yield that will simply resume the coroutine thread on next iteration.</li>
+<li>A CoroutineContext class, which acts as a reference to the I/O loop which allow the coroutine thread to be
+managed manually and resumed on demand.</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Asynchronous modules</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="get_started.html"
+                        title="previous chapter">Get Started With Turbo</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="apiref.html"
+                        title="next chapter">Turbo.lua API Versioning</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/modules.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="apiref.html" title="Turbo.lua API Versioning"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="get_started.html" title="Get Started With Turbo"
+             >previous</a> |</li>
+        <li><a href="index.html">Turbo.lua 1.0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, John Abrahamsen.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

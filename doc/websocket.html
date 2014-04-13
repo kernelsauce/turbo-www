@@ -1,0 +1,516 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>turbo.websocket – WebSocket server and client &mdash; Turbo.lua 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Turbo.lua 1.0.0 documentation" href="index.html" />
+    <link rel="next" title="turbo.ioloop – Main I/O Loop" href="ioloop.html" />
+    <link rel="prev" title="turbo.async – Asynchronous clients" href="async.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="ioloop.html" title="turbo.ioloop – Main I/O Loop"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="async.html" title="turbo.async – Asynchronous clients"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Turbo.lua 1.0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="turbo-websocket-websocket-server-and-client">
+<span id="websocket"></span><h1>turbo.websocket &#8211; WebSocket server and client<a class="headerlink" href="#turbo-websocket-websocket-server-and-client" title="Permalink to this headline">¶</a></h1>
+<p>The WebSocket modules extends Turbo and offers RFC 6455 compliant WebSocket
+support.</p>
+<p>The module offers two classes:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">turbo.websocket.WebSocketHandler</span></tt>, WebSocket support for <tt class="docutils literal"><span class="pre">turbo.web.Application</span></tt>.</li>
+<li><tt class="docutils literal"><span class="pre">turbo.websocket.WebSocketClient</span></tt>, callback based WebSocket client.</li>
+</ul>
+<p>Both classes uses the mixin class <tt class="docutils literal"><span class="pre">turbo.websocket.WebSocketStream</span></tt>, which in
+turn provides almost identical API&#8217;s for the two classes once connected. Both
+classes support SSL (wss://).</p>
+<p><em>NOTICE: _G.TURBO_SSL MUST be set to true and OpenSSL or axTLS MUST be
+installed to use this module as certain hash functions are required by the
+WebSocket protocol.</em></p>
+<p>A simple example subclassing <tt class="docutils literal"><span class="pre">turbo.websocket.WebSocketHandler</span></tt>.:</p>
+<div class="highlight-lua"><div class="highlight"><pre><span class="n">_G</span><span class="p">.</span><span class="n">TURBO_SSL</span> <span class="o">=</span> <span class="kc">true</span>
+<span class="kd">local</span> <span class="n">turbo</span> <span class="o">=</span> <span class="nb">require</span> <span class="s2">&quot;</span><span class="s">turbo&quot;</span>
+
+<span class="kd">local</span> <span class="n">WSExHandler</span> <span class="o">=</span> <span class="n">class</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">WSExHandler&quot;</span><span class="p">,</span> <span class="n">turbo</span><span class="p">.</span><span class="n">websocket</span><span class="p">.</span><span class="n">WebSocketHandler</span><span class="p">)</span>
+
+<span class="k">function</span> <span class="nf">WSExHandler</span><span class="p">:</span><span class="n">on_message</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="n">self</span><span class="p">:</span><span class="n">write_message</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">Hello World.&quot;</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="n">turbo</span><span class="p">.</span><span class="n">web</span><span class="p">.</span><span class="n">Application</span><span class="p">({{</span><span class="s2">&quot;</span><span class="s">^/ws$&quot;</span><span class="p">,</span> <span class="n">WSExHandler</span><span class="p">}}):</span><span class="n">listen</span><span class="p">(</span><span class="mi">8888</span><span class="p">)</span>
+<span class="n">turbo</span><span class="p">.</span><span class="n">ioloop</span><span class="p">.</span><span class="n">instance</span><span class="p">():</span><span class="n">start</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="section" id="websocketstream-mixin">
+<h2>WebSocketStream mixin<a class="headerlink" href="#websocketstream-mixin" title="Permalink to this headline">¶</a></h2>
+<p>WebSocketStream is a abstraction for a WebSocket connection, used as class mixin
+in <tt class="docutils literal"><span class="pre">turbo.websocket.WebSocketHandler</span></tt> and <tt class="docutils literal"><span class="pre">turbo.websocket.WebSocketClient</span></tt>.</p>
+<dl class="function">
+<dt>
+<tt class="descname">WebSocketStream:write_message(msg, binary)</tt></dt>
+<dd><p>Send a message to the client of the active Websocket. If the stream has been
+closed a error is raised.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>msg</strong> (<em>String</em>) &#8211; The message to send. This may be either a JSON-serializable table or a string.</li>
+<li><strong>binary</strong> (<em>Boolean</em>) &#8211; Treat the message as binary data (use WebSocket binary opcode).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">WebSocketStream:ping(data, callback, callback_arg)</tt></dt>
+<dd><p>Send a ping to the connected client.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> (<em>String</em>) &#8211; Data to pong back.</li>
+<li><strong>callback</strong> (<em>Function</em>) &#8211; Function to call when pong is recieved.</li>
+<li><strong>callback_arg</strong> &#8211; Argument for callback function.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">WebSocketStream:close()</tt></dt>
+<dd><p>Close the connection.</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">WebSocketStream:closed()</tt></dt>
+<dd><p>Has the stream been closed?</p>
+</dd></dl>
+
+</div>
+<div class="section" id="websockethandler-class">
+<h2>WebSocketHandler class<a class="headerlink" href="#websockethandler-class" title="Permalink to this headline">¶</a></h2>
+<p>The WebSocketHandler is a subclass of <tt class="docutils literal"><span class="pre">turbo.web.RequestHandler</span></tt>.
+So most of the methods and attributes of that class are available. However, some
+of them will not work with WebSocket&#8217;s. It also have the mixin class
+<tt class="docutils literal"><span class="pre">turbo.websocket.WebSocketStream</span></tt> included. Only the official WebSocket
+specification, RFC 6455, is supported.</p>
+<p>For a more thorough example of usage of this class you can review the &#8220;chatapp&#8221;
+example bundled with Turbo, which uses most of its features to create a simple
+Web-based chat app.</p>
+<p><em>Subclass WebSocketHandler and implement any of the following methods to handle
+the corresponding events.</em></p>
+<dl class="function">
+<dt>
+<tt class="descname">WebSocketHandler:open()</tt></dt>
+<dd><p>Called when a new WebSocket request is opened.</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">WebSocketHandler:on_message(msg)</tt></dt>
+<dd><p>Called when a message is recieved.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>msg</strong> (<em>String</em>) &#8211; The recieved message.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">WebSocketHandler:on_close()</tt></dt>
+<dd><p>Called when the connection is closed.</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">WebSocketHandler:on_error(msg)</tt></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>msg</strong> (<em>String</em>) &#8211; A error string.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">WebSocketHandler:prepare()</tt></dt>
+<dd><p>Called when the headers has been parsed and the server is about to initiate
+the WebSocket specific handshake. Use this to e.g check if the headers
+Origin field matches what you expect. To abort the connection you raise a
+error. <tt class="docutils literal"><span class="pre">turbo.web.HTTPError</span></tt> is the most convinient as you can set error
+code and a message returned to the client.</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">WebSocketHandler:subprotocol(protocols)</tt></dt>
+<dd><p>Called if the client have included a Sec-WebSocket-Protocol field
+in header. This method will then recieve a table of protocols that
+the clients wants to use. If this field is not set, this method will
+never be called. The return value of this method should be a string
+which matches one of the suggested protcols in its parameter.
+If all of the suggested protocols are unacceptable then dismissing of
+the request is done by either raising error
+(such as <tt class="docutils literal"><span class="pre">turbo.web.HTTPError</span></tt>) or returning nil.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>protocols</strong> (<em>Table of protocol name strings.</em>) &#8211; The protocol names recieved from client.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="websocketclient-class">
+<h2>WebSocketClient class<a class="headerlink" href="#websocketclient-class" title="Permalink to this headline">¶</a></h2>
+<p>A async callback based WebSocket client. Only the official WebSocket
+specification, RFC 6455, is supported. The WebSocketClient is partly based
+on the <tt class="docutils literal"><span class="pre">turbo.async.HTTPClient</span></tt> using its HTTP implementation to do the initial
+connect to the server, then do the handshake and finally wrapping the connection
+with the <tt class="docutils literal"><span class="pre">turbo.websocket.WebSocketStream</span></tt>. All of the callback functions
+recieves the class instance as first argument for convinence. Furthermore the
+class can be initialized with keyword arguments that are passed on to the
+<tt class="docutils literal"><span class="pre">turbo.async.HTTPClient</span></tt> that are being used. So if you are going to use
+the connect to a SSL enabled server (wss://) then you simply refer to the documentation
+of the HTTPClient and set &#8220;priv_file&#8221;, &#8220;cert_file&#8221; keys properly.
+Some arguments are discared though, such as e.g &#8220;method&#8221;.</p>
+<p>A simple usage example of <tt class="docutils literal"><span class="pre">turbo.websocket.WebSocketClient</span></tt>.:</p>
+<div class="highlight-lua"><div class="highlight"><pre><span class="n">_G</span><span class="p">.</span><span class="n">TURBO_SSL</span> <span class="o">=</span> <span class="kc">true</span> <span class="c1">-- SSL must be enabled for WebSocket support!</span>
+<span class="kd">local</span> <span class="n">turbo</span> <span class="o">=</span> <span class="nb">require</span> <span class="s2">&quot;</span><span class="s">turbo&quot;</span>
+
+<span class="n">turbo</span><span class="p">.</span><span class="n">ioloop</span><span class="p">.</span><span class="n">instance</span><span class="p">():</span><span class="n">add_callback</span><span class="p">(</span><span class="n">function</span><span class="p">()</span>
+    <span class="n">turbo</span><span class="p">.</span><span class="n">websocket</span><span class="p">.</span><span class="n">WebSocketClient</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">ws://127.0.0.1:8888/ws&quot;</span><span class="p">,</span> <span class="p">{</span>
+        <span class="n">on_headers</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">headers</span><span class="p">)</span>
+            <span class="c1">-- Review headers recieved from the WebSocket server.</span>
+            <span class="c1">-- You can e.g drop the request if the response headers</span>
+            <span class="c1">-- are not satisfactory with self:close().</span>
+        <span class="k">end</span><span class="p">,</span>
+        <span class="n">modify_headers</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">headers</span><span class="p">)</span>
+            <span class="c1">-- Modify outgoing headers before they are sent.</span>
+            <span class="c1">-- headers parameter are a instance of httputil.HTTPHeader.</span>
+        <span class="k">end</span><span class="p">,</span>
+        <span class="n">on_connect</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="n">self</span><span class="p">)</span>
+            <span class="c1">-- Called when the client has successfully opened a WebSocket</span>
+            <span class="c1">-- connection to the server.</span>
+            <span class="c1">-- When the connection is established you can write a message:</span>
+            <span class="n">self</span><span class="p">:</span><span class="n">write_message</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">Hello World!&quot;</span><span class="p">)</span>
+        <span class="k">end</span><span class="p">,</span>
+        <span class="n">on_message</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+            <span class="c1">-- Print the incoming message.</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">self</span><span class="p">:</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">end</span><span class="p">,</span>
+        <span class="n">on_close</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="n">self</span><span class="p">)</span>
+            <span class="c1">-- I am called when connection is closed. Both gracefully and</span>
+            <span class="c1">-- not gracefully.</span>
+        <span class="k">end</span><span class="p">,</span>
+        <span class="n">on_error</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">reason</span><span class="p">)</span>
+            <span class="c1">-- I am called whenever there is a error with the WebSocket.</span>
+            <span class="c1">-- code are defined in ``turbo.websocket.errors``. reason are</span>
+            <span class="c1">-- a string representation of the same error.</span>
+        <span class="k">end</span>
+    <span class="p">})</span>
+<span class="k">end</span><span class="p">):</span><span class="n">start</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>WebSocketClient uses error codes to report failure for the <tt class="docutils literal"><span class="pre">on_error</span></tt> callback.</p>
+<dl class="attribute">
+<dt id="errors">
+<tt class="descname">errors</tt><a class="headerlink" href="#errors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Numeric error codes set as first argument of <tt class="docutils literal"><span class="pre">on_error</span></tt>:</p>
+<blockquote>
+<div><p><tt class="docutils literal"><span class="pre">INVALID_URL</span></tt>            - URL could not be parsed.</p>
+<p><tt class="docutils literal"><span class="pre">INVALID_SCHEMA</span></tt>         - Invalid URL schema</p>
+<p><tt class="docutils literal"><span class="pre">COULD_NOT_CONNECT</span></tt>      - Could not connect, check message.</p>
+<p><tt class="docutils literal"><span class="pre">PARSE_ERROR_HEADERS</span></tt>    - Could not parse response headers.</p>
+<p><tt class="docutils literal"><span class="pre">CONNECT_TIMEOUT</span></tt>        - Connect timed out.</p>
+<p><tt class="docutils literal"><span class="pre">REQUEST_TIMEOUT</span></tt>        - Request timed out.</p>
+<p><tt class="docutils literal"><span class="pre">NO_HEADERS</span></tt>             - Shouldn&#8217;t happen.</p>
+<p><tt class="docutils literal"><span class="pre">REQUIRES_BODY</span></tt>          - Expected a HTTP body, but none set.</p>
+<p><tt class="docutils literal"><span class="pre">INVALID_BODY</span></tt>           - Request body is not a string.</p>
+<p><tt class="docutils literal"><span class="pre">SOCKET_ERROR</span></tt>           - Socket error, check message.</p>
+<p><tt class="docutils literal"><span class="pre">SSL_ERROR</span></tt>              - SSL error, check message.</p>
+<p><tt class="docutils literal"><span class="pre">BUSY</span></tt>                       - Operation in progress.</p>
+<p><tt class="docutils literal"><span class="pre">REDIRECT_MAX</span></tt>               - Redirect maximum reached.</p>
+<p><tt class="docutils literal"><span class="pre">CALLBACK_ERROR</span></tt>         - Error in callback.</p>
+<p><tt class="docutils literal"><span class="pre">BAD_HTTP_STATUS</span></tt>        - Did not recieve expected 101 Upgrade.</p>
+<p><tt class="docutils literal"><span class="pre">WEBSOCKET_PROTOCOL_ERROR</span></tt>  - Invalid WebSocket protocol data recieved.</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">WebSocketClient(address, kwargs):</tt></dt>
+<dd><p>Create a new WebSocketClient class instance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>address</strong> (<em>String</em>) &#8211; URL for WebSocket server to connect to.</li>
+<li><strong>kwargs</strong> (<em>Table</em>) &#8211; Optional keyword arguments.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Instance of <tt class="docutils literal"><span class="pre">turbo.websocket.WebSocketClient</span></tt></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Available keyword arguments:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">params</span></tt> - Provide parameters as table.</li>
+<li><tt class="docutils literal"><span class="pre">cookie</span></tt> - The cookie to use.</li>
+<li><tt class="docutils literal"><span class="pre">allow_redirects</span></tt> - Allow or disallow redirects. Default is true.</li>
+<li><tt class="docutils literal"><span class="pre">max_redirects</span></tt> - Maximum redirections allowed. Default is 4.</li>
+<li><tt class="docutils literal"><span class="pre">body</span></tt> - Request HTTP body in plain form.</li>
+<li><tt class="docutils literal"><span class="pre">request_timeout</span></tt> - Total timeout in seconds (including connect) for request. Default is 60 seconds. After the connection has been established the timeout is removed.</li>
+<li><tt class="docutils literal"><span class="pre">connect_timeout</span></tt> - Timeout in seconds for connect. Default is 20 secs.</li>
+<li><tt class="docutils literal"><span class="pre">auth_username</span></tt> - Basic Auth user name.</li>
+<li><tt class="docutils literal"><span class="pre">auth_password</span></tt> - Basic Auth password.</li>
+<li><tt class="docutils literal"><span class="pre">user_agent</span></tt> - User Agent string used in request headers. Default is <tt class="docutils literal"><span class="pre">Turbo</span> <span class="pre">Client</span> <span class="pre">vx.x.x</span></tt>.</li>
+<li><tt class="docutils literal"><span class="pre">priv_file</span></tt> - Path to SSL / HTTPS private key file.</li>
+<li><tt class="docutils literal"><span class="pre">cert_file</span></tt> - Path to SSL / HTTPS certificate key file.</li>
+<li><tt class="docutils literal"><span class="pre">ca_path</span></tt> - Path to SSL / HTTPS CA certificate verify location, if not given builtin is used, which is copied from Ubuntu 12.10.</li>
+<li><tt class="docutils literal"><span class="pre">verify_ca</span></tt> - SSL / HTTPS verify servers certificate. Default is true.</li>
+</ul>
+</dd></dl>
+
+<div class="section" id="description-of-the-callback-functions">
+<h3>Description of the callback functions<a class="headerlink" href="#description-of-the-callback-functions" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="modify_headers">
+<tt class="descname">modify_headers</tt><big>(</big><em>self</em>, <em>headers</em><big>)</big><a class="headerlink" href="#modify_headers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modify OUTGOING HTTP headers before they are sent to the server.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>self</strong> (<em>turbo.websocket.WebSocketClient</em>) &#8211; The WebSocketClient instance calling the callback.</li>
+<li><strong>headers</strong> (<tt class="docutils literal"><span class="pre">turbo.httputil.HTTPHeader</span></tt>) &#8211; Headers ready to be sent and possibly modified.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="on_headers">
+<tt class="descname">on_headers</tt><big>(</big><em>self</em>, <em>headers</em><big>)</big><a class="headerlink" href="#on_headers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Review HTTP headers recieved from the WebSocket server.
+You can e.g drop the request if the response headers
+are not satisfactory with self:close().</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>self</strong> (<em>turbo.websocket.WebSocketClient</em>) &#8211; The WebSocketClient instance calling the callback.</li>
+<li><strong>headers</strong> (<tt class="docutils literal"><span class="pre">turbo.httputil.HTTPHeader</span></tt>) &#8211; Headers recieved from the client.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="on_connect">
+<tt class="descname">on_connect</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#on_connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called when the client has successfully opened a WebSocket
+connection to the server.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>self</strong> (<em>turbo.websocket.WebSocketClient</em>) &#8211; The WebSocketClient instance calling the callback.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="on_message">
+<tt class="descname">on_message</tt><big>(</big><em>self</em>, <em>msg</em><big>)</big><a class="headerlink" href="#on_message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called when a message is recieved.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>self</strong> (<em>turbo.websocket.WebSocketClient</em>) &#8211; The WebSocketClient instance calling the callback.</li>
+<li><strong>msg</strong> (<em>String</em>) &#8211; The message or binary data.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="on_close">
+<tt class="descname">on_close</tt><big>(</big><em>self</em><big>)</big><a class="headerlink" href="#on_close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called when connection is closed. Both gracefully and
+not gracefully.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>self</strong> (<em>turbo.websocket.WebSocketClient</em>) &#8211; The WebSocketClient instance calling the callback.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="on_error">
+<tt class="descname">on_error</tt><big>(</big><em>self</em>, <em>code</em>, <em>reason</em><big>)</big><a class="headerlink" href="#on_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called whenever there is a error with the WebSocket.
+code are defined in <tt class="docutils literal"><span class="pre">turbo.websocket.errors</span></tt>. reason are
+a string representation of the same error.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>self</strong> (<em>turbo.websocket.WebSocketClient</em>) &#8211; The WebSocketClient instance calling the callback.</li>
+<li><strong>code</strong> (<em>Number</em>) &#8211; Error code defined in <tt class="docutils literal"><span class="pre">turbo.websocket.errors</span></tt>.</li>
+<li><strong>reason</strong> (<em>String</em>) &#8211; String representation of error.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">turbo.websocket &#8211; WebSocket server and client</a><ul>
+<li><a class="reference internal" href="#websocketstream-mixin">WebSocketStream mixin</a></li>
+<li><a class="reference internal" href="#websockethandler-class">WebSocketHandler class</a></li>
+<li><a class="reference internal" href="#websocketclient-class">WebSocketClient class</a><ul>
+<li><a class="reference internal" href="#description-of-the-callback-functions">Description of the callback functions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="async.html"
+                        title="previous chapter">turbo.async &#8211; Asynchronous clients</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="ioloop.html"
+                        title="next chapter">turbo.ioloop &#8211; Main I/O Loop</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/websocket.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="ioloop.html" title="turbo.ioloop – Main I/O Loop"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="async.html" title="turbo.async – Asynchronous clients"
+             >previous</a> |</li>
+        <li><a href="index.html">Turbo.lua 1.0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, John Abrahamsen.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
