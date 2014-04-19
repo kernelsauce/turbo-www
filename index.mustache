@@ -1,94 +1,93 @@
 {{{head}}}
 
 <div id="topframe">
-	<div id="top" class="centered">
-		<h2 class="alegreya100">Simple. Fast. Brilliant.</h2>
-		<h3 class="alegreya100">Develop networking applications with Lua on Linux.</h3>
-	</div>
-	<div class="container-narrow-spaced">
-		<center>
-			<a class="btn btn-default btn-lg" 
-				href="https://github.com/kernelsauce/turbo/archive/v1.0.0.tar.gz">
-				<span class="glyphicon glyphicon-import"></span>
-				Download</a>
-			<a class="btn btn-default btn-lg" href="https://github.com/kernelsauce/turbo" target="_blank">
-				<span class="glyphicon glyphicon-zoom-in"></span>
-				View Github project</a>
-			
-			<p style="margin-top:15px;">
-				<a href="/doc/web.html" target="_blank">HTTP/HTTPS 1.1</a>, 
-				<a href="/doc/websocket.html" target="_blank">WebSocket</a>, 
-				<a href="/doc/web.html#mustache-templating" target="_blank">Mustache</a>, 
-				<a href="/doc/iostream.html" target="_blank">Evented IO</a>,
-				<a href="/doc/iostream.html#ssliostream-class" target="_blank">SSL</a>,
-				<a>High performance</a>,
-				<a>Apache 2.0 License</a>
-			</p>
-		</center>
-	</div>
+    <div id="top" class="centered">
+        <h2 class="alegreya100">Simple. Fast. Brilliant.</h2>
+        <h3 class="alegreya100">Develop networking applications with Lua on Linux.</h3>
+    </div>
+    <div class="container-narrow-spaced">
+        <center>
+            <a class="btn btn-default btn-lg" 
+                href="https://github.com/kernelsauce/turbo/archive/v1.0.0.tar.gz">
+                <span class="glyphicon glyphicon-import"></span>
+                Download</a>
+            <a class="btn btn-default btn-lg" href="https://github.com/kernelsauce/turbo" target="_blank">
+                <span class="glyphicon glyphicon-zoom-in"></span>
+                View Github project</a>
+            
+            <p style="margin-top:15px;">
+                <a href="/doc/web.html" target="_blank">HTTP/HTTPS 1.1</a>, 
+                <a href="/doc/websocket.html" target="_blank">WebSocket</a>, 
+                <a href="/doc/web.html#mustache-templating" target="_blank">Mustache</a>, 
+                <a href="/doc/iostream.html" target="_blank">Evented IO</a>,
+                <a href="/doc/iostream.html#ssliostream-class" target="_blank">SSL</a>,
+                <a>High performance</a>,
+                <a>Apache 2.0 License</a>
+            </p>
+        </center>
+    </div>
 </div>
 
 <div class="container-spaced" id="content">
-		<div class="row margin-top-50">
-			<div class="col-md-6">
-		<pre><code>
+        <div class="row margin-top-50">
+            <div class="col-md-6">
+        <pre><code>
 -- helloworld.lua
 local turbo = require "turbo"
 
 local MyApp = class("MyApp", 
-	turbo.web.RequestHandler)
+    turbo.web.RequestHandler)
 
 function MyApp:get()
     self:write("Hello World!")
 end
 
 turbo.web.Application({
-	{"^/$", MyApp}
+    {"^/$", MyApp}
 }):listen(8888)
 turbo.ioloop.instance():start()
-		</code></pre>
-			</div>
-			<div class="col-md-6" style="line-height:180%;">			
-				<h2 class="blue">
-					Create apps
-				</h2>
-				<p> Turbo provides you with all the stuff you need to develop fast web apps, web API's and
-					networking applications.
-				</p>
-				<p>
-					Web application classes are modeled after Google's webapp, you should quickly feel right at home.
-				</p>
-				<p>
-					The rest of the API's of the framework is very close to that of Python's Tornado framework.
-				</p>
-			</div>
-		</div>
+        </code></pre>
+            </div>
+            <div class="col-md-6" style="line-height:180%;">            
+                <h2 class="blue">
+                    Create apps
+                </h2>
+                <p> Turbo provides you with all the stuff you need to develop fast web apps, web API's and
+                    networking applications.
+                </p>
+                <p>
+                    Web application classes are modeled after the intuitive Google Webapp framework, you should quickly feel right at home.
+                </p>
+                <p>
+                    The rest of the API's of the framework is very close to that of Python's Tornado framework.
+                </p>
+            </div>
+        </div>
 
 
-		<div class="row margin-top-50">
-			<div class="col-md-6">
-				<h2 class="blue">
-					Effeciency
-				</h2>
-				<p>LuaJIT is a Just-In-Time Compiler (JIT) for the Lua programming language being used by the complete Turbo framework. This means that your code is optimized and compiled for the native architecture it runs on, thereby reducing hardware requirements (or pay-per-use CPUs) compared to other frameworks (such as Django or Tornado).</p>
-				<p>Great for reducing your costs, power usage and producing a smaller impact on the environment.</p>			
-			</div>
-			<div class="col-md-6" style="line-height:180%;">			
-				<span class="glyphicon glyphicon-tree-deciduous" style="font-size: 300px; color:green;"></span>
+        <div class="row margin-top-50">
+            <div class="col-md-6">
+                <h2 class="blue">
+                    Effeciency
+                </h2>
+                <p>LuaJIT is a Just-In-Time Compiler (JIT) for the Lua programming language being used by the complete Turbo framework. This means that your code is optimized and compiled for the native architecture it runs on, thereby reducing hardware requirements (or pay-per-use CPUs) compared to other frameworks (such as Django or Tornado).</p>
+                <p>Great for reducing your costs, power usage and producing a smaller impact on the environment.</p>            
+            </div>
+            <div class="col-md-6" style="line-height:180%;">            
+                <span class="glyphicon glyphicon-tree-deciduous" style="font-size: 300px; color:green;"></span>
+            </div>
+        </div>
 
-			</div>
-		</div>
 
-
-		<h2 class="blue margin-top-50">Interactive mode</h2>
-		<p>When developing your app you get good feedback on what is going on directly in your shell.</p>
-		<pre><code style="color:green;">
+        <h2 class="blue margin-top-50">Interactive mode</h2>
+        <p>When developing your app you get good feedback on what is going on directly in your shell.</p>
+        <pre><code style="color:green;">
 [S 2014/04/13 16:08:37] [web.lua] 200 OK GET / (127.0.0.1) 0ms
-		</code></pre>
+        </code></pre>
 
-		<div class="row margin-top-50">
-			<div class="col-md-6">
-		<pre><code>
+        <div class="row margin-top-50">
+            <div class="col-md-6">
+        <pre><code>
 -- websocket.lua
 _G.TURBO_SSL = true
 local turbo = require "turbo"
@@ -101,36 +100,36 @@ function WSExHandler:on_message(msg)
 end
 
 turbo.web.Application({
-	{"^/ws$", WSExHandler}
+    {"^/ws$", WSExHandler}
 }):listen(8888)
 turbo.ioloop.instance():start()
 
-		</code></pre>
-			</div>
-			<div class="col-md-6" style="line-height:180%;">			
-				<h2 class="blue">
-					WebSockets
-				</h2>
-				<p>
-					Create rich apps using WebSockets. The WebSockets handler provides a simple API and blends
-					nicely in together with your other HTTP handlers.
-				</p>
-				<p>
-					Web application classes are modeled after Google's webapp, you should quickly feel right at home.
-				</p>
-			</div>
-		</div>
+        </code></pre>
+            </div>
+            <div class="col-md-6" style="line-height:180%;">            
+                <h2 class="blue">
+                    WebSockets
+                </h2>
+                <p>
+                    Create rich apps using WebSockets. The WebSockets handler provides a simple API and blends
+                    nicely in together with your other HTTP handlers.
+                </p>
+                <p>
+                    A WebSocket client is also available and reuses the same API as its server equivalent.
+                </p>
+            </div>
+        </div>
 
-		<div class="row margin-top-50">
-			<div class="col-md-6">
-				<h2 class="blue margin-top-50">Coroutines</h2>
-				<p>
-					Lua has built-in coroutines. This makes it possible to yield a request at a certain point 
-					waiting for something to finish (e.g a database lookup) and resume the function (coroutine) at that point with the results delivered in a variable. This means NO callbacks are required for async operations.
-				</p>
-			</div>
-			<div class="col-md-6" style="line-height:180%;">
-		<pre><code>
+        <div class="row margin-top-50">
+            <div class="col-md-6">
+                <h2 class="blue margin-top-50">Coroutines</h2>
+                <p>
+                    Lua has built-in coroutines. This makes it possible to yield a request at a certain point 
+                    waiting for something to finish (e.g a database lookup) and resume the function (coroutine) at that point with the results delivered in a variable. This means NO callbacks are required for async operations.
+                </p>
+            </div>
+            <div class="col-md-6" style="line-height:180%;">
+        <pre><code>
 -- redis.lua
 -- pseudo code
 
@@ -138,11 +137,84 @@ function MyApp:get(id)
    local val = coroutine.yield(redis:get(id))
    self:write({result = val})
 end
-		</code></pre>
-			</div>
-		</div>
+        </code></pre>
+            </div>
+        </div>
 
+        <div class="row margin-top-50">
+            <div class="col-md-6">
+        <pre><code style="font-size:10px;">
+-- githubfeed.lua
+-- Fetch number of watchers of the Turbo repo and
+-- render using Mustache templates.
+local templates = turbo.web.Mustache.TemplateHelper(
+    "/var/templates/")
 
+function GithubFeed:get(search)
+    local res = coroutine.yield(
+        turbo.async.HTTPClient():fetch(
+           "https://api.github.com/repos/kernelsauce/turbo"))
+    
+    if res.error or res.headers:get_status_code() ~= 200 then
+        -- Check for errors.
+        -- If data could not be fetched a 500 error is 
+        -- sent as response.
+        error(turbo.web.HTTPError(500, res.error.message))
+    end
+
+    local json = turbo.escape.json_decode(res.body)
+    self:write(templates:render("github.mustache", json))
+end
+
+local application = turbo.web.Application({
+    {"^/$", GithubFeed}
+})
+        </code></pre>
+            </div>
+            <div class="col-md-6" style="line-height:180%;">
+                <h2 class="blue margin-top-50">Batteries included</h2>
+                <p>
+                    Many features are included in the Turbo framework. Such as a async HTTP client, a file server, JSON parsing and serialization, Mustache parsers, SSL, hash, 
+                    escaping, filesystem functions and more. Most things required by a modern web and networking apps are included. All utility features are of high quality
+                    and has been optimized for speed.
+                </p>
+                <p>
+                    Create a app using the GitHub API quickly using the HTTP client, JSON parser and Mustache for HTML rendering.
+                </p>
+            </div>
+        </div>
+
+        <div class="row margin-top-50">
+            <div class="col-md-6">
+                <h2 class="blue">
+                    Examples
+                </h2>
+                <p>
+                    Review example code included. There are many examples displaying the different features.
+                </p>
+                <p>
+                    There is also a extensive test suite of the framework included which also demonstrates some possiblites you have when
+                    coding.
+                </p>            
+            </div>
+            <div class="col-md-6" style="line-height:180%;">            
+                <img src="assets/chatapp.png">
+            </div>
+        </div>
+
+        <div class="row margin-top-50">
+            <div class="col-md-6">
+                <img src="assets/docs.png">
+            </div>
+            <div class="col-md-6" style="line-height:180%;">            
+                <h2 class="blue">
+                    Docs
+                </h2>
+                <p>
+                    Extensive documentation of the complete framework is available and up-to-date. The documentation is generated from rst (ReStructuredText) files.
+                </p>
+            </div>
+        </div>
 
 </div>
 
