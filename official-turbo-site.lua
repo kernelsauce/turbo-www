@@ -32,6 +32,8 @@ local app = turbo.web.Application({
 })
 
 local srv = turbo.httpserver.HTTPServer(app)
-srv:bind(tonumber(os.getenv("turbo-www-port")) or 80)
+local port = tonumber(os.getenv("turbo-www-port")) or 80
+srv:bind(port)
+turbo.log.success("Binding to port: " .. tostring(port))
 srv:start(1)
 turbo.ioloop.instance():start()
