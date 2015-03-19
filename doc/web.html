@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,15 +6,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>turbo.web – Core web framework &mdash; Turbo.lua 1.0.0 documentation</title>
+    <title>turbo.web – Core web framework &mdash; Turbo.lua 1.1.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '',
-        VERSION:     '1.0.0',
+        URL_ROOT:    './',
+        VERSION:     '1.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="Turbo.lua 1.0.0 documentation" href="index.html" />
+    <link rel="top" title="Turbo.lua 1.1.0 documentation" href="index.html" />
     <link rel="next" title="turbo.async – Asynchronous clients" href="async.html" />
     <link rel="prev" title="Turbo.lua API Versioning" href="apiref.html" /> 
   </head>
@@ -42,7 +40,7 @@
         <li class="right" >
           <a href="apiref.html" title="Turbo.lua API Versioning"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Turbo.lua 1.0.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Turbo.lua 1.1.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -599,7 +597,7 @@ do this:</p>
           <span class="k">if</span> <span class="ow">not</span> <span class="n">find_in_store</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">then</span>
               <span class="nb">error</span><span class="p">(</span><span class="n">turbo</span><span class="p">.</span><span class="n">web</span><span class="p">.</span><span class="n">HTTPError</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s">Could not find item in store&quot;</span><span class="p">))</span>
           <span class="k">end</span>
-          <span class="o">..</span><span class="p">.</span>
+          <span class="o">...</span>
      <span class="k">end</span>
 </pre></div>
 </td></tr></table></div>
@@ -626,10 +624,10 @@ the body of the request. The request is always finished on error.</p>
 </div>
 <div class="section" id="staticfilehandler-class">
 <h2>StaticFileHandler class<a class="headerlink" href="#staticfilehandler-class" title="Permalink to this headline">¶</a></h2>
-<p>A simple static file handler. All files are cached in memory after initial request.
-If you are planning to serve big files, then it is recommended to use a
-proper static file web server instead. For small files that can be kept
-in memory it is ok.</p>
+<p>A static file handler for files on the local file system.
+All files below user defined <tt class="docutils literal"><span class="pre">_G.TURBO_STATIC_MAX</span></tt> or default 1MB in size
+are stored in memory after initial request. Files larger than this are read
+from disk on demand.</p>
 <p>Usage:</p>
 <div class="highlight-lua"><div class="highlight"><pre><span class="kd">local</span> <span class="n">app</span> <span class="o">=</span> <span class="n">turbo</span><span class="p">.</span><span class="n">web</span><span class="p">.</span><span class="n">Application</span><span class="p">:</span><span class="n">new</span><span class="p">({</span>
         <span class="p">{</span><span class="s2">&quot;</span><span class="s">^/$&quot;</span><span class="p">,</span> <span class="n">turbo</span><span class="p">.</span><span class="n">web</span><span class="p">.</span><span class="n">StaticFileHandler</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s">/var/www/index.html&quot;</span><span class="p">},</span>
@@ -806,7 +804,35 @@ case of un-compiled string being compiled with Mustache.compile internally.</p>
 </dd></dl>
 
 <p>Example templating:</p>
-<div class="highlight-html"><pre> &lt;body&gt;
+<div class="highlight-html"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29</pre></div></td><td class="code"><div class="highlight"><pre> &lt;body&gt;
      &lt;h1&gt;
              {{heading }}
      &lt;/h1&gt;
@@ -834,8 +860,9 @@ case of un-compiled string being compiled with Mustache.compile internally.</p>
      {{^items}}
              No items available!
      {{/items}}
- &lt;/body&gt;</pre>
-</div>
+ &lt;/body&gt;
+</pre></div>
+</td></tr></table></div>
 <p>With a render table likes this:</p>
 <div class="highlight-lua"><div class="highlight"><pre><span class="p">{</span>
     <span class="n">heading</span><span class="o">=</span><span class="s2">&quot;</span><span class="s">My website!&quot;</span><span class="p">,</span>
@@ -997,12 +1024,12 @@ case of un-compiled string being compiled with Mustache.compile internally.</p>
         <li class="right" >
           <a href="apiref.html" title="Turbo.lua API Versioning"
              >previous</a> |</li>
-        <li><a href="index.html">Turbo.lua 1.0.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Turbo.lua 1.1.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2013, John Abrahamsen.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
     </div>
   </body>
 </html>
