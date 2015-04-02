@@ -1,0 +1,34 @@
+{{{head}}}
+{{{menu}}}
+<div class="container-narrow-spaced">
+    <h2 class="blue">Windows support in Turbo 2.0 (master branch)</h2>
+    <p>
+
+    For Windows use the included install.bat file or one line downloader:
+    </p>
+    <pre>powershell -command "& { iwr https://raw.githubusercontent.com/kernelsauce/turbo/luasocket/install.bat OutFile t.bat }" && t.bat
+    </pre>
+    <p>
+    This will install all dependencies: Visual Studio, git, mingw, gnuwin, openssl using Chocolatey. LuaJIT, the LuaRocks package manager and Turbo will be compiled and installed at C:\turbo.lua. It will also install LuaSocket and LuaFileSystem with LuaRocks. The Windows environment will be ready to use upon success.
+    </p>
+    <p>
+    Try: 
+    <pre>luajit C:\turbo.lua\src\turbo\examples\helloworld.lua</pre>
+    </p>
+    <p>
+    If you decide to install manually its just a matter of compiling the libtffi.dll (make in root directory) using mingw gcc (it will not compile with VS). Use "make SSL=none" to avoid the need for OpenSSL libraries. LuaSocket and LuaFileSystem needs to be available for loading in the Lua environment. If any of the Turbo specific .dll's are placed at non-default location then use environment variables to point to the correct place:
+    </p>
+    <p>
+    E.g: 
+
+<pre>
+SET TURBO_LIBTFFI=C:\turbo.lua\src\turbo\libtffi_wrap.dll
+SET TURBO_LIBSSL=C:\Program Files\OpenSSL\libeay32.dll
+</pre>
+    </p>
+
+    </p>
+    
+    <h1>. . .</h1>
+</div>
+{{{foot}}}

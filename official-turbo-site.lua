@@ -22,6 +22,7 @@ local app = turbo.web.Application({
     {"^/contact$",      TemplateRenderer,   "contact.mustache"},
     {"^/modules$",      TemplateRenderer,   "modules.mustache"},
     {"^/sponsor$",      TemplateRenderer,   "sponsor.mustache"},
+    {"^/win$",          TemplateRenderer,   "windows.mustache"},
     -- End of templates.
     {"^/doc/$",         SFH,                "./doc/index.html"},
     {"^/doc/(.*)$",     SFH,                "./doc/"},
