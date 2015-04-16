@@ -197,31 +197,24 @@
             
   <div class="section" id="get-started-with-turbo">
 <span id="get-started"></span><h1>Get Started With Turbo<a class="headerlink" href="#get-started-with-turbo" title="Permalink to this headline">¶</a></h1>
-<p>A set off simple examples to get you started using Turbo.</p>
+<p>A set of simple examples to get you started using Turbo.</p>
 <div class="section" id="installing-turbo">
 <h2>Installing Turbo<a class="headerlink" href="#installing-turbo" title="Permalink to this headline">¶</a></h2>
 <p>Turbo needs LuaJIT to run, because it uses the LuaJIT FFI library it will not
-run on &#8216;official/normal/vanilla&#8217; Lua.
-You can get the latest stable and installation instructions at <a class="reference external" href="http://luajit.org/download">http://luajit.org/download</a></p>
-<p>There&#8217;s no official stable releases of Turbo yet, but you can obtain
-a pretty-stable copy from the git repository.</p>
+run on &#8216;official/normal/vanilla&#8217; Lua. Quick install on Debian/Ubuntu (you may need
+to add sudo or run these as root user):</p>
+<div class="highlight-sh"><div class="highlight"><pre><span class="nv">$ </span>apt-get install luajit luarocks git build-essential libssl-dev
+<span class="nv">$ </span>luarocks install turbo
+</pre></div>
+</div>
+<p>You can also install Turbo use the included Makefile in the project source:</p>
 <div class="highlight-sh"><div class="highlight"><pre><span class="nv">$ </span>git clone https://github.com/kernelsauce/turbo.git
-<span class="nv">$ </span>make -C ./turbo install
+<span class="nv">$ </span><span class="nb">cd </span>turbo <span class="o">&amp;&amp;</span> make install
 </pre></div>
 </div>
-<p>You can also install Turbo to a different directory than /usr/local
-by setting the PREFIX variable when doing make install.</p>
-<div class="highlight-sh"><div class="highlight"><pre><span class="nv">$ </span>make -C ./turbo install <span class="nv">PREFIX</span><span class="o">=</span>/path/to/my/dir
-</pre></div>
-</div>
-<p>Or, if you want a self-contained directory with luajit and turbo,
-you can use the turbo-virtual-env tool from <a class="reference external" href="https://github.com/enotodden/turbo-virtual-env">https://github.com/enotodden/turbo-virtual-env</a></p>
-<div class="highlight-sh"><div class="highlight"><pre><span class="nv">$ </span><span class="nb">cd</span> /some/dir
-<span class="nv">$ </span>curl https://raw.github.com/enotodden/turbo-virtual-env/master/turbo-virtual-env | bash -s - --create ./env
-</pre></div>
-</div>
-<p>To start using the newly installed LuaJIT and Turbo, just source the &#8216;activate&#8217; script located in /some/dir/env/bin/activate</p>
-<div class="highlight-sh"><div class="highlight"><pre><span class="nv">$ </span>. env/bin/activate
+<p>You can provide a PREFIX argument to the make which will install Turbo in a specified directory.</p>
+<p>For Windows users it is recommended to use the included install.bat file or running the one-line command below from a administrative command line. Beware that this will compile and install all dependencies: Visual Studio, git, mingw, gnuwin, openssl using Chocolatey. LuaJIT, the LuaRocks package manager and Turbo will be installed at C:\turbo.lua. Unfortunately it is required to have Visual Studio to effectively use LuaRocks on Windows. LuaRocks will be used to install LuaSocket and LuaFileSystem. The Windows environment will be ready to use upon success, and the luajit and luarocks commands will be in your Windows environment PATH.</p>
+<div class="highlight-bat"><div class="highlight"><pre>powershell -command <span class="s2">&quot;&amp; { iwr https://raw.githubusercontent.com/kernelsauce/turbo/master/install.bat -OutFile t.bat }&quot;</span> &amp;&amp; t.bat
 </pre></div>
 </div>
 </div>
@@ -247,6 +240,7 @@ you can use the turbo-virtual-env tool from <a class="reference external" href="
 <span class="n">turbo</span><span class="p">.</span><span class="n">ioloop</span><span class="p">.</span><span class="n">instance</span><span class="p">():</span><span class="n">start</span><span class="p">()</span>
 </pre></div>
 </div>
+<p>Save the file as helloworld.lua and run it with <tt class="docutils literal"><span class="pre">luajit</span> <span class="pre">helloworld.lua</span></tt>.</p>
 </div>
 <div class="section" id="request-parameters">
 <h2>Request parameters<a class="headerlink" href="#request-parameters" title="Permalink to this headline">¶</a></h2>
