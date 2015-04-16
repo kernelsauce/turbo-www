@@ -1,0 +1,505 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>turbo.ioloop – Main I/O Loop &mdash; Turbo.lua 2.0.0 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="Turbo.lua 2.0.0 documentation" href="index.html"/>
+        <link rel="next" title="turbo.iostream – High-level asynchronous streaming sockets" href="iostream.html"/>
+        <link rel="prev" title="turbo.websocket – WebSocket server and client" href="websocket.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="index.html" class="fa fa-home"> Turbo.lua</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="get_started.html">Get Started With Turbo</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="get_started.html#installing-turbo">Installing Turbo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_started.html#hello-world">Hello World</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_started.html#request-parameters">Request parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_started.html#routes">Routes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_started.html#serving-static-files">Serving Static Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_started.html#json-output">JSON Output</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Asynchronous modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#example-module">Example module</a></li>
+</ul>
+</li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="apiref.html">Turbo.lua API Versioning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="apiref.html#preliminaries">Preliminaries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apiref.html#module-version">Module Version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="web.html">turbo.web &#8211; Core web framework</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="web.html#requesthandler-class">RequestHandler class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#httperror-class">HTTPError class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#staticfilehandler-class">StaticFileHandler class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#redirecthandler-class">RedirectHandler class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#application-class">Application class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#mustache-templating">Mustache Templating</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#mustache-templatehelper-class">Mustache.TemplateHelper class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="async.html">turbo.async &#8211; Asynchronous clients</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="async.html#utilities-for-coroutines">Utilities for coroutines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="async.html#httpclient-class">HTTPClient class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="async.html#httpresponse-class">HTTPResponse class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="websocket.html">turbo.websocket &#8211; WebSocket server and client</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="websocket.html#websocketstream-mixin">WebSocketStream mixin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="websocket.html#websockethandler-class">WebSocketHandler class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="websocket.html#websocketclient-class">WebSocketClient class</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">turbo.ioloop &#8211; Main I/O Loop</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#ioloop-class">IOLoop class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="iostream.html">turbo.iostream &#8211; High-level asynchronous streaming sockets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="iostream.html#iostream-class">IOStream class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="iostream.html#ssliostream-class">SSLIOStream class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="httputil.html">turbo.httputil &#8211; Utilities for the HTTP protocol</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="httputil.html#httpparser-class">HTTPParser class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="httputil.html#httpheaders-class">HTTPHeaders class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="httputil.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="httpserver.html">turbo.httpserver &#8211; Callback based HTTP Server</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="httpserver.html#httpserver-class">HTTPServer class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="httpserver.html#httprequest-class">HTTPRequest class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="httpserver.html#httpconnection-class">HTTPConnection class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tcpserver.html">turbo.tcpserver &#8211; Callback based TCP socket Server</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tcpserver.html#tcpserver-class">TCPServer class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="structs.html">turbo.structs &#8211; Data structures</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="structs.html#deque-double-ended-queue">deque, Double ended queue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structs.html#buffer-low-level-mutable-buffer">buffer, Low-level mutable buffer</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="hash.html">turbo.hash &#8211; Cryptographic Hashes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="hash.html#sha1-class">SHA1 class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="util.html">turbo.util Common utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="util.html#table-tools">Table tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="util.html#low-level">Low level</a></li>
+<li class="toctree-l2"><a class="reference internal" href="util.html#misc">Misc</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sockutil.html">turbo.sockutil &#8211; Socket utilites and helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="escape.html">turbo.escape &#8211; Escaping and JSON utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="escape.html#json-conversion">JSON conversion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="escape.html#escaping">Escaping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="escape.html#string-trimming">String trimming</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="log.html">turbo.log &#8211; Command-line log helper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="turbovisor.html">turbovisor &#8211; Application supervisor</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="turbovisor.html#options">Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turbovisor.html#examples">Examples</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">Turbo.lua</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>turbo.ioloop &#8211; Main I/O Loop</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="_sources/ioloop.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="turbo-ioloop-main-i-o-loop">
+<span id="ioloop"></span><h1>turbo.ioloop &#8211; Main I/O Loop<a class="headerlink" href="#turbo-ioloop-main-i-o-loop" title="Permalink to this headline">¶</a></h1>
+<p>Single threaded I/O event loop implementation. The module handles socket
+events and timeouts and scheduled intervals with millisecond precision</p>
+<dl class="docutils">
+<dt>The inner working are as follows:</dt>
+<dd><ul class="first last simple">
+<li>Set iteration timeout to 3600 milliseconds.</li>
+<li>If there exists any timeout callbacks, check if they are scheduled to be run. Run them if they are. If timeout callback would be delayed because of too long iteration timeout, the timeout is adjusted.</li>
+<li>If there exists any interval callbacks, check if they are scheduled to be run. If interval callback would be missed because of too long iteration timeout, the iteration timeout is adjusted.</li>
+<li>If any callbacks exists, run them. If callbacks add new callbacks, adjust the iteration timeout to 0.</li>
+<li>If there are any events for sockets file descriptors, run their respective handlers. Else wait for specified interval timeout, or any socket events, jump back to start.</li>
+</ul>
+</dd>
+</dl>
+<p>Note that because of the fact that the server itself does not know if callbacks block or have a long processing time it cannot guarantee that timeouts and intervals are called on time.
+In a perfect world they would be called within a reasonable time of what is specified.</p>
+<dl class="docutils">
+<dt>Event types for file descriptors are defined in the ioloop module&#8217;s namespace:</dt>
+<dd><tt class="docutils literal"><span class="pre">turbo.ioloop.READ</span></tt>, <tt class="docutils literal"><span class="pre">turbo.ioloop.WRITE</span></tt>, <tt class="docutils literal"><span class="pre">turbo.ioloop.PRI</span></tt>, <tt class="docutils literal"><span class="pre">turbo.ioloop.ERROR</span></tt></dd>
+</dl>
+<dl class="function">
+<dt id="ioloop.instance">
+<tt class="descclassname">ioloop.</tt><tt class="descname">instance</tt><big>(</big><big>)</big><a class="headerlink" href="#ioloop.instance" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Create or get the global IOLoop instance.</dt>
+<dd>Multiple calls to this function returns the same IOLoop.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">IOLoop class.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<div class="section" id="ioloop-class">
+<h2>IOLoop class<a class="headerlink" href="#ioloop-class" title="Permalink to this headline">¶</a></h2>
+<p>IOLoop is a level triggered I/O loop, with additional support for timeout
+and time interval callbacks. Heavily influenced by ioloop.py in the Tornado web framework.
+<em>Note: Only one instance of IOLoop can ever run at the same time!</em></p>
+<dl class="function">
+<dt id="IOLoop">
+<tt class="descname">IOLoop</tt><big>(</big><big>)</big><a class="headerlink" href="#IOLoop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new IOLoop class instance.</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">IOLoop:add_handler(fd, events, handler, arg)</tt></dt>
+<dd><p>Add handler function for given event mask on fd.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>fd</strong> (<em>Number</em>) &#8211; File descriptor to bind handler for.</li>
+<li><strong>events</strong> (<em>Number</em>) &#8211; Events bit mask. Defined in ioloop namespace. E.g <tt class="docutils literal"><span class="pre">turbo.ioloop.READ</span></tt> and <tt class="docutils literal"><span class="pre">turbo.ioloop.WRITE</span></tt>. Multiple bits can be AND&#8217;ed together.</li>
+<li><strong>handler</strong> (<em>Function</em>) &#8211; Handler function.</li>
+<li><strong>arg</strong> &#8211; Optional argument for function handler. Handler is called with this as first argument if set.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Boolean</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">IOLoop:update_handler(fd, events)</tt></dt>
+<dd><p>Update existing handler function&#8217;s trigger events.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>fd</strong> (<em>Number</em>) &#8211; File descriptor to update.</li>
+<li><strong>events</strong> (<em>Number</em>) &#8211; Events bit mask. Defined in ioloop namespace. E.g <tt class="docutils literal"><span class="pre">turbo.ioloop.READ</span></tt> and <tt class="docutils literal"><span class="pre">turbo.ioloop.WRITE</span></tt>. Multiple bits can be AND&#8217;ed together.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">IOLoop:remove_handler(fd)</tt></dt>
+<dd><p>Remove a existing handler from the IO Loop.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fd</strong> (<em>Number</em>) &#8211; File descriptor to remove handler from.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">IOLoop:add_callback(callback, arg)</tt></dt>
+<dd><p>Add a callback to be called on next iteration of the IO Loop.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>callback</strong> (<em>Function</em>) &#8211; A function to be called on next iteration.</li>
+<li><strong>arg</strong> &#8211; Optional argument for callback. Callback is called with this as first argument if set.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">IOLoop class. Returns self for convinience.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">IOLoop:add_timeout(timestamp, func, arg)</tt></dt>
+<dd><p>Add a timeout with function to be called in future. There is given no gurantees that the function will be called
+on time. See the note at beginning of this section.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>timestamp</strong> (<em>Number</em>) &#8211; Timestamp when to call function, based on Unix CLOCK_MONOTONIC time in milliseconds precision. E.g util.gettimemonotonic() + 3000 will timeout in 3 seconds. See <tt class="docutils literal"><span class="pre">turbo.util.gettimemonotonic()</span></tt>.</li>
+<li><strong>func</strong> (<em>Function</em>) &#8211; A function to be called after timestamp is reached.</li>
+<li><strong>arg</strong> &#8211; Optional argument for func.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Unique reference as a reference for this timeout. The reference can be used as parameter for <tt class="docutils literal"><span class="pre">IOLoop:remove_timeout()</span></tt></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">IOLoop:remove_timeout(ref)</tt></dt>
+<dd><p>Remove a scheduled timeout by using its reference.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>identifer</strong> (<em>Number</em>) &#8211; Identifier returned by <tt class="docutils literal"><span class="pre">IOLoop:add_timeout()</span></tt></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">Boolean</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">IOLoop:set_interval(msec, func, arg)</tt></dt>
+<dd><p>Add a function to be called every milliseconds. There is given no guarantees that the function will be called on time. See the note at beginning of this section.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>msec</strong> (<em>Number</em>) &#8211; Milliseconds interval.</li>
+<li><strong>func</strong> (<em>Function</em>) &#8211; A function to be called every msecs.</li>
+<li><strong>arg</strong> &#8211; Optional argument for func.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Unique numeric identifier as a reference to this interval. The refence can be used as parameter for <tt class="docutils literal"><span class="pre">IOLoop:clear_interval()</span></tt></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">IOLoop:clear_interval(ref)</tt></dt>
+<dd><p>Clear a interval.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ref</strong> (<em>Boolean</em>) &#8211; Reference returned by <tt class="docutils literal"><span class="pre">IOLoop:set_interval()</span></tt></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">IOLoop:start()</tt></dt>
+<dd><p>Start the IO Loop. The loop will continue running until <tt class="docutils literal"><span class="pre">IOLoop.close</span></tt> is called via a callback added.</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">IOLoop:close()</tt></dt>
+<dd><p>Close the I/O loop. This call must be made from within the running I/O loop via a  callback, timeout, or interval. Notice: All pending callbacks and handlers are cleared upon close.</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">IOLoop:running()</tt></dt>
+<dd><p>Is the IO Loop running?</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Boolean</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="iostream.html" class="btn btn-neutral float-right" title="turbo.iostream – High-level asynchronous streaming sockets">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="websocket.html" class="btn btn-neutral" title="turbo.websocket – WebSocket server and client"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, John Abrahamsen.
+    </p>
+  </div>
+
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'2.0.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+  
+ 
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-45069639-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+</body>
+</html>

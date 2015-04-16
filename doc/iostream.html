@@ -1,0 +1,651 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>turbo.iostream – High-level asynchronous streaming sockets &mdash; Turbo.lua 2.0.0 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="Turbo.lua 2.0.0 documentation" href="index.html"/>
+        <link rel="next" title="turbo.httputil – Utilities for the HTTP protocol" href="httputil.html"/>
+        <link rel="prev" title="turbo.ioloop – Main I/O Loop" href="ioloop.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="index.html" class="fa fa-home"> Turbo.lua</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="get_started.html">Get Started With Turbo</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="get_started.html#installing-turbo">Installing Turbo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_started.html#hello-world">Hello World</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_started.html#request-parameters">Request parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_started.html#routes">Routes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_started.html#serving-static-files">Serving Static Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_started.html#json-output">JSON Output</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Asynchronous modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#example-module">Example module</a></li>
+</ul>
+</li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="apiref.html">Turbo.lua API Versioning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="apiref.html#preliminaries">Preliminaries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apiref.html#module-version">Module Version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="web.html">turbo.web &#8211; Core web framework</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="web.html#requesthandler-class">RequestHandler class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#httperror-class">HTTPError class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#staticfilehandler-class">StaticFileHandler class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#redirecthandler-class">RedirectHandler class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#application-class">Application class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#mustache-templating">Mustache Templating</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#mustache-templatehelper-class">Mustache.TemplateHelper class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="async.html">turbo.async &#8211; Asynchronous clients</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="async.html#utilities-for-coroutines">Utilities for coroutines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="async.html#httpclient-class">HTTPClient class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="async.html#httpresponse-class">HTTPResponse class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="websocket.html">turbo.websocket &#8211; WebSocket server and client</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="websocket.html#websocketstream-mixin">WebSocketStream mixin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="websocket.html#websockethandler-class">WebSocketHandler class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="websocket.html#websocketclient-class">WebSocketClient class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ioloop.html">turbo.ioloop &#8211; Main I/O Loop</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ioloop.html#ioloop-class">IOLoop class</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">turbo.iostream &#8211; High-level asynchronous streaming sockets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#iostream-class">IOStream class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ssliostream-class">SSLIOStream class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="httputil.html">turbo.httputil &#8211; Utilities for the HTTP protocol</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="httputil.html#httpparser-class">HTTPParser class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="httputil.html#httpheaders-class">HTTPHeaders class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="httputil.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="httpserver.html">turbo.httpserver &#8211; Callback based HTTP Server</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="httpserver.html#httpserver-class">HTTPServer class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="httpserver.html#httprequest-class">HTTPRequest class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="httpserver.html#httpconnection-class">HTTPConnection class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tcpserver.html">turbo.tcpserver &#8211; Callback based TCP socket Server</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tcpserver.html#tcpserver-class">TCPServer class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="structs.html">turbo.structs &#8211; Data structures</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="structs.html#deque-double-ended-queue">deque, Double ended queue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structs.html#buffer-low-level-mutable-buffer">buffer, Low-level mutable buffer</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="hash.html">turbo.hash &#8211; Cryptographic Hashes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="hash.html#sha1-class">SHA1 class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="util.html">turbo.util Common utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="util.html#table-tools">Table tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="util.html#low-level">Low level</a></li>
+<li class="toctree-l2"><a class="reference internal" href="util.html#misc">Misc</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sockutil.html">turbo.sockutil &#8211; Socket utilites and helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="escape.html">turbo.escape &#8211; Escaping and JSON utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="escape.html#json-conversion">JSON conversion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="escape.html#escaping">Escaping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="escape.html#string-trimming">String trimming</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="log.html">turbo.log &#8211; Command-line log helper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="turbovisor.html">turbovisor &#8211; Application supervisor</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="turbovisor.html#options">Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turbovisor.html#examples">Examples</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">Turbo.lua</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>turbo.iostream &#8211; High-level asynchronous streaming sockets</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="_sources/iostream.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="turbo-iostream-high-level-asynchronous-streaming-sockets">
+<span id="iostream"></span><h1>turbo.iostream &#8211; High-level asynchronous streaming sockets<a class="headerlink" href="#turbo-iostream-high-level-asynchronous-streaming-sockets" title="Permalink to this headline">¶</a></h1>
+<p>The turbo.iostream namespace contains the IOStream and SSLIOStream classes, which are abstractions to provide easy to use streaming sockets. All API&#8217;s are callback based and depend on the <tt class="docutils literal"><span class="pre">turbo.ioloop.IOLoop</span></tt> class.</p>
+<div class="section" id="iostream-class">
+<h2>IOStream class<a class="headerlink" href="#iostream-class" title="Permalink to this headline">¶</a></h2>
+<p>The IOStream class is implemented through the use of the IOLoop class, and are utilized e.g in the RequestHandler class and its subclasses. They provide a non-blocking interface
+and support callbacks for most of its operations. For read operations the class supports methods suchs as read until delimiter, read n bytes and read until close. The class has
+its own write buffer and there is no need to buffer data at any other level. The default maximum write buffer is defined to 100 MB. This can be defined on class initialization.</p>
+<dl class="function">
+<dt id="IOStream">
+<tt class="descname">IOStream</tt><big>(</big><em>fd</em>, <em>io_loop</em>, <em>max_buffer_size</em><big>)</big><a class="headerlink" href="#IOStream" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new IOStream instance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>fd</strong> (<em>Number</em>) &#8211; File descriptor, either open or closed. If closed then, the <tt class="docutils literal"><span class="pre">turbo.iostream.IOStream:connect()</span></tt> method can be used to connect.</li>
+<li><strong>io_loop</strong> (<em>IOLoop object</em>) &#8211; IOLoop class instance to use for event processing. If none is set then the global instance is used, see the <tt class="docutils literal"><span class="pre">ioloop.instance()</span></tt> function.</li>
+<li><strong>max_buffer_size</strong> (<em>Number</em>) &#8211; The maximum number of bytes that can be held in internal buffer before flushing must occur. If none is set, 104857600 are used as default.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">IOStream object</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">IOStream:connect(address, port, family, callback, errhandler, arg)</tt></dt>
+<dd><p>Connect to a address without blocking. To successfully use this method it is neccessary to check
+the return value, and also assign a error handler function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>host</strong> (<em>String</em>) &#8211; The host to connect to. Either hostname or IP.</li>
+<li><strong>port</strong> (<em>Number</em>) &#8211; The port to connect to. E.g 80.</li>
+<li><strong>family</strong> &#8211; Socket family. Optional. Pass nil to guess.</li>
+<li><strong>callback</strong> (<em>Function</em>) &#8211; Optional callback for &#8220;on successfull connect&#8221;</li>
+<li><strong>errhandler</strong> (<em>Function</em>) &#8211; Optional callback for &#8220;on error&#8221;. Called with errno and its string representation as arguments.</li>
+<li><strong>arg</strong> &#8211; Optional argument for callback. callback and errhandler are called with this as first argument.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Number. -1 + error message on error, 0 on success.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">IOStream:read_until(delimiter, callback, arg)</tt></dt>
+<dd><p>Read until delimiter, then call callback with recieved data. The callback
+recieves the data read as a parameter. Delimiter is plain text, and does
+not support Lua patterns. See read_until_pattern for that functionality.
+read_until should be used instead of read_until_pattern wherever possible
+because of the overhead of doing pattern matching.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>delimiter</strong> (<em>String</em>) &#8211; Delimiter sequence, text or binary.</li>
+<li><strong>callback</strong> (<em>Function</em>) &#8211; Callback function. The function is called with the recieved data as parameter.</li>
+<li><strong>arg</strong> &#8211; Optional argument for callback. If arg is given then it will be the first argument for the callback and the data will be the second.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">IOStream:read_until_pattern(pattern, callback, arg)</tt></dt>
+<dd><p>Read until pattern is matched, then call callback with recieved data.
+The callback recieves the data read as a parameter. If you only are
+doing plain text matching then using read_until is recommended for
+less overhead.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>pattern</strong> (<em>String</em>) &#8211; Lua pattern string.</li>
+<li><strong>callback</strong> (<em>Function</em>) &#8211; Callback function. The function is called with the recieved data as parameter.</li>
+<li><strong>arg</strong> &#8211; Optional argument for callback. If arg is given then it will be the first argument for the callback and the data will be the second.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">IOStream:read_bytes(num_bytes, callback, arg, streaming_callback, streaming_arg)</tt></dt>
+<dd><p>Call callback when we read the given number of bytes.
+If a streaming_callback argument is given, it will be called with chunks
+of data as they become available, and the argument to the final call to
+callback will be empty.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>num_bytes</strong> (<em>Number</em>) &#8211; The amount of bytes to read.</li>
+<li><strong>callback</strong> (<em>Function</em>) &#8211; Callback function. The function is called with the recieved data as parameter.</li>
+<li><strong>arg</strong> &#8211; Optional argument for callback. If arg is given then it will be the first argument for the callback and the data will be the second.</li>
+<li><strong>streaming_callback</strong> (<em>Function</em>) &#8211; Optional callback to be called as chunks become available.</li>
+<li><strong>streaming_arg</strong> &#8211; Optional argument for callback. If arg is given then it will be the first argument for the callback and the data will be the second.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">IOStream:read_until_close(callback, arg, streaming_callback, streaming_arg)</tt></dt>
+<dd><p>Reads all data from the socket until it is closed.
+If a streaming_callback argument is given, it will be called with
+chunks of data as they become available, and the argument to the final call to
+callback will contain the final chunk.
+This method respects the max_buffer_size set in the IOStream object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>callback</strong> (<em>Function with one parameter or nil.</em>) &#8211; Function to call when connection has been closed.</li>
+<li><strong>arg</strong> &#8211; Optional argument for callback. If arg is given then it will be the first argument for the callback and the data will be the second.</li>
+<li><strong>streaming_callback</strong> &#8211; Function to call as chunks become available.</li>
+<li><strong>streaming_arg</strong> &#8211; Optional argument for callback. If arg is given then it will be the first argument for the callback and the data will be the second.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">IOStream:write(data, callback, arg)</tt></dt>
+<dd><p>Write the given data to this stream.
+If callback is given, we call it when all of the buffered write
+data has been successfully written to the stream. If there was
+previously buffered write data and an old write callback, that
+callback is simply overwritten with this new callback.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> (<em>String</em>) &#8211; The chunk to write to the stream.</li>
+<li><strong>callback</strong> (<em>Function</em>) &#8211; Function to be called when data has been written to stream.</li>
+<li><strong>arg</strong> &#8211; Optional argument for callback. If arg is given then it will be the first argument for the callback.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">IOStream:write_buffer(buf, callback, arg)</tt></dt>
+<dd><p>Write the given <tt class="docutils literal"><span class="pre">turbo.structs.buffer</span></tt> to the stream.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>buf</strong> (<tt class="docutils literal"><span class="pre">turbo.structs.buffer</span></tt> class instance) &#8211; The buffer to write to the stream.</li>
+<li><strong>callback</strong> (<em>Function</em>) &#8211; Function to be called when data has been written to stream.</li>
+<li><strong>arg</strong> &#8211; Optional argument for callback. If arg is given then it will be the first argument for the callback.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">IOStream:write_zero_copy(buf, callback, arg)</tt></dt>
+<dd><p>Write the given buffer class instance to the stream without
+copying. This means that this write MUST complete before any other
+writes can be performed, and that the internal buffer has to be completely flushed
+before it is invoked. This can be achieved by either using <tt class="docutils literal"><span class="pre">IOStream:writing</span></tt> or adding a callback to
+other write methods callled before this. There is a barrier in place to stop this from
+happening. A error is raised in the case of invalid use. This method is recommended
+when you are serving static data, it refrains from copying the contents of
+the buffer into its internal buffer, at the cost of not allowing
+more data being added to the internal buffer before this write is finished. The reward is lower
+memory usage and higher throughput.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>buf</strong> (<tt class="docutils literal"><span class="pre">turbo.structs.buffer</span></tt>) &#8211; The buffer to send. Will not be modified, and must not be modified until write is done.</li>
+<li><strong>callback</strong> (<em>Function</em>) &#8211; Function to be called when data has been written to stream.</li>
+<li><strong>arg</strong> &#8211; Optional argument for callback. If arg is given then it will be the first argument for the callback.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">IOStream:set_close_callback(callback, arg)</tt></dt>
+<dd><p>Set a callback to be called when the stream is closed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>callback</strong> (<em>Function</em>) &#8211; Function to call on close.</li>
+<li><strong>arg</strong> &#8211; Optional argument for callback.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">IOStream:set_max_buffer_size(sz)</tt></dt>
+<dd><p>Set the maximum amount of bytes to be buffered internally in the IOStream instance.
+This limit can also be set on class instanciation. This method does NOT check the
+current size and does NOT immediately raise a error if the size is already exceeded.
+A error will instead occur when the IOStream is adding data to its buffer on the next
+occasion and detects a breached limit.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sz</strong> (<em>Number</em>) &#8211; Size of max buffer in bytes.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">IOStream:close()</tt></dt>
+<dd><p>Close the stream and its associated socket.</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">IOStream:reading()</tt></dt>
+<dd><p>Is the stream currently being read from?</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Boolean</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">IOStream:writing()</tt></dt>
+<dd><p>Is the stream currently being written to?</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Boolean</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">IOStream:closed()</tt></dt>
+<dd><p>Has the stream been closed?</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Boolean</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="ssliostream-class">
+<h2>SSLIOStream class<a class="headerlink" href="#ssliostream-class" title="Permalink to this headline">¶</a></h2>
+<p>The class is a extended IOStream class and uses
+OpenSSL for its implementation. All of the methods in its super class IOStream, are available. Obviously a SSL tunnel software is a more optimal approach than this, as there
+is quite a bit of overhead in handling SSL connections.
+For this class to be available, the global <tt class="docutils literal"><span class="pre">_G.TURBO_SSL</span></tt>
+must be set.</p>
+<dl class="function">
+<dt id="SSLIOStream">
+<tt class="descname">SSLIOStream</tt><big>(</big><em>fd</em>, <em>ssl_options</em>, <em>io_loop</em>, <em>max_buffer_size</em><big>)</big><a class="headerlink" href="#SSLIOStream" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new SSLIOStream instance. You can use:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">turbo.crypto.ssl_create_client_context</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">turbo.crypto.ssl_create_server_context</span></tt></li>
+</ul>
+<p>to create a SSL context to pass in the ssl_options argument.</p>
+<p>ssl_options table should contain:</p>
+<ul class="simple">
+<li>&#8220;_ssl_ctx&#8221; - SSL_CTX pointer created with context functions in crypto.lua.</li>
+<li>&#8220;_type&#8221; - Optional number, 0 or 1. 0 indicates that the context is a server context, and 1 indicates a client context. If not set, it is presumed to be a server context.</li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>fd</strong> (<em>Number</em>) &#8211; File descriptor, either open or closed. If closed then, the <tt class="docutils literal"><span class="pre">turbo.iostream</span> <span class="pre">IOStream:connect()</span></tt> method can be used to connect.</li>
+<li><strong>ssl_options</strong> (<em>Table</em>) &#8211; SSL arguments.</li>
+<li><strong>io_loop</strong> (<em>IOLoop class instance</em>) &#8211; IOLoop class instance to use for event processing. If none is set then the global instance is used, see the <tt class="docutils literal"><span class="pre">ioloop.instance()</span></tt> function.</li>
+<li><strong>max_buffer_size</strong> (<em>Number</em>) &#8211; The maximum number of bytes that can be held in internal buffer before flushing must occur. If none is set, 104857600 are used as default.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">IOStream object</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">IOStream:connect(address, port, family, verify, callback, errhandler, arg)</tt></dt>
+<dd><p>Connect to a address without blocking. To successfully use this method it is neccessary to check
+the return value, and also assign a error handler function. Notice that the verify arugment has
+been added as opposed to the <tt class="docutils literal"><span class="pre">IOStream:connect</span></tt> method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>host</strong> (<em>String</em>) &#8211; The host to connect to. Either hostname or IP.</li>
+<li><strong>port</strong> (<em>Number</em>) &#8211; The port to connect to. E.g 80.</li>
+<li><strong>family</strong> &#8211; Socket family. Optional. Pass nil to guess.</li>
+<li><strong>verify</strong> (<em>Boolean</em>) &#8211; Verify SSL certificate chain and match hostname in certificate on connect. Setting this to false is only recommended if the server certificates are self-signed or something like that.</li>
+<li><strong>callback</strong> (<em>Function</em>) &#8211; Optional callback for &#8220;on successfull connect&#8221;</li>
+<li><strong>errhandler</strong> (<em>Function</em>) &#8211; Optional callback for &#8220;on error&#8221;. Called with errno and its string representation as arguments.</li>
+<li><strong>arg</strong> &#8211; Optional argument for callback. callback and errhandler are called with this as first argument.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Number. -1 + error message on error, 0 on success.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="httputil.html" class="btn btn-neutral float-right" title="turbo.httputil – Utilities for the HTTP protocol">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="ioloop.html" class="btn btn-neutral" title="turbo.ioloop – Main I/O Loop"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, John Abrahamsen.
+    </p>
+  </div>
+
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'2.0.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+  
+ 
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-45069639-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+</body>
+</html>

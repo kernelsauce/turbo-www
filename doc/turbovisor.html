@@ -1,0 +1,324 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>turbovisor – Application supervisor &mdash; Turbo.lua 2.0.0 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="Turbo.lua 2.0.0 documentation" href="index.html"/>
+        <link rel="prev" title="turbo.log – Command-line log helper" href="log.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="index.html" class="fa fa-home"> Turbo.lua</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="get_started.html">Get Started With Turbo</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="get_started.html#installing-turbo">Installing Turbo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_started.html#hello-world">Hello World</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_started.html#request-parameters">Request parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_started.html#routes">Routes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_started.html#serving-static-files">Serving Static Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_started.html#json-output">JSON Output</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Asynchronous modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#example-module">Example module</a></li>
+</ul>
+</li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="apiref.html">Turbo.lua API Versioning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="apiref.html#preliminaries">Preliminaries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apiref.html#module-version">Module Version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="web.html">turbo.web &#8211; Core web framework</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="web.html#requesthandler-class">RequestHandler class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#httperror-class">HTTPError class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#staticfilehandler-class">StaticFileHandler class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#redirecthandler-class">RedirectHandler class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#application-class">Application class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#mustache-templating">Mustache Templating</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#mustache-templatehelper-class">Mustache.TemplateHelper class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="async.html">turbo.async &#8211; Asynchronous clients</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="async.html#utilities-for-coroutines">Utilities for coroutines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="async.html#httpclient-class">HTTPClient class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="async.html#httpresponse-class">HTTPResponse class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="websocket.html">turbo.websocket &#8211; WebSocket server and client</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="websocket.html#websocketstream-mixin">WebSocketStream mixin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="websocket.html#websockethandler-class">WebSocketHandler class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="websocket.html#websocketclient-class">WebSocketClient class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ioloop.html">turbo.ioloop &#8211; Main I/O Loop</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ioloop.html#ioloop-class">IOLoop class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="iostream.html">turbo.iostream &#8211; High-level asynchronous streaming sockets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="iostream.html#iostream-class">IOStream class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="iostream.html#ssliostream-class">SSLIOStream class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="httputil.html">turbo.httputil &#8211; Utilities for the HTTP protocol</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="httputil.html#httpparser-class">HTTPParser class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="httputil.html#httpheaders-class">HTTPHeaders class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="httputil.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="httpserver.html">turbo.httpserver &#8211; Callback based HTTP Server</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="httpserver.html#httpserver-class">HTTPServer class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="httpserver.html#httprequest-class">HTTPRequest class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="httpserver.html#httpconnection-class">HTTPConnection class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tcpserver.html">turbo.tcpserver &#8211; Callback based TCP socket Server</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tcpserver.html#tcpserver-class">TCPServer class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="structs.html">turbo.structs &#8211; Data structures</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="structs.html#deque-double-ended-queue">deque, Double ended queue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structs.html#buffer-low-level-mutable-buffer">buffer, Low-level mutable buffer</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="hash.html">turbo.hash &#8211; Cryptographic Hashes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="hash.html#sha1-class">SHA1 class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="util.html">turbo.util Common utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="util.html#table-tools">Table tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="util.html#low-level">Low level</a></li>
+<li class="toctree-l2"><a class="reference internal" href="util.html#misc">Misc</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sockutil.html">turbo.sockutil &#8211; Socket utilites and helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="escape.html">turbo.escape &#8211; Escaping and JSON utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="escape.html#json-conversion">JSON conversion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="escape.html#escaping">Escaping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="escape.html#string-trimming">String trimming</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="log.html">turbo.log &#8211; Command-line log helper</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">turbovisor &#8211; Application supervisor</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#options">Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">Turbo.lua</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>turbovisor &#8211; Application supervisor</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="_sources/turbovisor.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="turbovisor-application-supervisor">
+<span id="turbovisor"></span><h1>turbovisor &#8211; Application supervisor<a class="headerlink" href="#turbovisor-application-supervisor" title="Permalink to this headline">¶</a></h1>
+<p>Turbovisor is an application management tool which detects file changes and restart application on the fly.  There are several parameters to control its behavior.</p>
+<div class="section" id="options">
+<h2>Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>-w, &#8211;watch</dt>
+<dd>Specify files or directories to watch.  If directory is given, all its sub-directories will be monitored as well.  By default, turbovisor will monitor current directory.</dd>
+<dt>-i, &#8211;ignore</dt>
+<dd>Specify files or directories to ignore.  If directory is given, all its sub-directories will be ignored as well.  This is uesfull for auto-generated files or temporary files.  By default, no file is ignored.</dd>
+</dl>
+</div>
+<div class="section" id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<p>Suppose we have the following directory tree, and turbovisor is invoked in the app&#8217;s root directory</p>
+<div class="highlight-python"><div class="highlight"><pre>MyApp
+|-- doc
+|   |-- doc1.rst
+|   |-- doc2.rst
+|-- main.lua
+|-- model.lua
+|-- templates
+|   |-- view.lua
+|-- static
+|   |-- files
+|       |-- file1
+|       |-- file2
+|   |-- images
+|       |-- image1.jpg
+|       |-- image2.jpg
+|   |-- sounds
+|       |-- sound1.mp3
+|       |-- sound2.mp3
+|-- test.lua
+</pre></div>
+</div>
+<dl class="docutils">
+<dt>turbovisor main.lua</dt>
+<dd>start application, detect any changes in the application</dd>
+<dt>turbovisor main.lua -w model.lua</dt>
+<dd>start application, only monitor file model.lua</dd>
+<dt>turbovisor main.lua &#8211;watch model.lua main.lua</dt>
+<dd>start application, only monitor file model.lua and main.lua</dd>
+<dt>turbovisor main.lua -i static</dt>
+<dd>start application, detect any changes in the application, except static directory and its sub-directories</dd>
+<dt>turbovisor main.lua &#8211;watch static &#8211;ignore static/images static/sounds/sound2.mp3</dt>
+<dd>start application, monitor static directory, but ignore its images sub-directory and sound2.mp3 file</dd>
+</dl>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="log.html" class="btn btn-neutral" title="turbo.log – Command-line log helper"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, John Abrahamsen.
+    </p>
+  </div>
+
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'2.0.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+  
+ 
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-45069639-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+</body>
+</html>

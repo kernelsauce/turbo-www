@@ -1,0 +1,574 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>turbo.httpserver – Callback based HTTP Server &mdash; Turbo.lua 2.0.0 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="Turbo.lua 2.0.0 documentation" href="index.html"/>
+        <link rel="next" title="turbo.tcpserver – Callback based TCP socket Server" href="tcpserver.html"/>
+        <link rel="prev" title="turbo.httputil – Utilities for the HTTP protocol" href="httputil.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="index.html" class="fa fa-home"> Turbo.lua</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="get_started.html">Get Started With Turbo</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="get_started.html#installing-turbo">Installing Turbo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_started.html#hello-world">Hello World</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_started.html#request-parameters">Request parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_started.html#routes">Routes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_started.html#serving-static-files">Serving Static Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_started.html#json-output">JSON Output</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Asynchronous modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#example-module">Example module</a></li>
+</ul>
+</li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="apiref.html">Turbo.lua API Versioning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="apiref.html#preliminaries">Preliminaries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apiref.html#module-version">Module Version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="web.html">turbo.web &#8211; Core web framework</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="web.html#requesthandler-class">RequestHandler class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#httperror-class">HTTPError class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#staticfilehandler-class">StaticFileHandler class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#redirecthandler-class">RedirectHandler class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#application-class">Application class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#mustache-templating">Mustache Templating</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#mustache-templatehelper-class">Mustache.TemplateHelper class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="async.html">turbo.async &#8211; Asynchronous clients</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="async.html#utilities-for-coroutines">Utilities for coroutines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="async.html#httpclient-class">HTTPClient class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="async.html#httpresponse-class">HTTPResponse class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="websocket.html">turbo.websocket &#8211; WebSocket server and client</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="websocket.html#websocketstream-mixin">WebSocketStream mixin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="websocket.html#websockethandler-class">WebSocketHandler class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="websocket.html#websocketclient-class">WebSocketClient class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ioloop.html">turbo.ioloop &#8211; Main I/O Loop</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ioloop.html#ioloop-class">IOLoop class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="iostream.html">turbo.iostream &#8211; High-level asynchronous streaming sockets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="iostream.html#iostream-class">IOStream class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="iostream.html#ssliostream-class">SSLIOStream class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="httputil.html">turbo.httputil &#8211; Utilities for the HTTP protocol</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="httputil.html#httpparser-class">HTTPParser class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="httputil.html#httpheaders-class">HTTPHeaders class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="httputil.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">turbo.httpserver &#8211; Callback based HTTP Server</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#httpserver-class">HTTPServer class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#httprequest-class">HTTPRequest class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#httpconnection-class">HTTPConnection class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tcpserver.html">turbo.tcpserver &#8211; Callback based TCP socket Server</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tcpserver.html#tcpserver-class">TCPServer class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="structs.html">turbo.structs &#8211; Data structures</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="structs.html#deque-double-ended-queue">deque, Double ended queue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structs.html#buffer-low-level-mutable-buffer">buffer, Low-level mutable buffer</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="hash.html">turbo.hash &#8211; Cryptographic Hashes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="hash.html#sha1-class">SHA1 class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="util.html">turbo.util Common utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="util.html#table-tools">Table tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="util.html#low-level">Low level</a></li>
+<li class="toctree-l2"><a class="reference internal" href="util.html#misc">Misc</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sockutil.html">turbo.sockutil &#8211; Socket utilites and helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="escape.html">turbo.escape &#8211; Escaping and JSON utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="escape.html#json-conversion">JSON conversion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="escape.html#escaping">Escaping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="escape.html#string-trimming">String trimming</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="log.html">turbo.log &#8211; Command-line log helper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="turbovisor.html">turbovisor &#8211; Application supervisor</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="turbovisor.html#options">Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turbovisor.html#examples">Examples</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">Turbo.lua</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>turbo.httpserver &#8211; Callback based HTTP Server</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="_sources/httpserver.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="turbo-httpserver-callback-based-http-server">
+<span id="httpserver"></span><h1>turbo.httpserver &#8211; Callback based HTTP Server<a class="headerlink" href="#turbo-httpserver-callback-based-http-server" title="Permalink to this headline">¶</a></h1>
+<p>A non-blocking HTTPS Server based on the TCPServer class.
+Supports HTTP/1.0 and HTTP/1.1.
+Includes SSL support.</p>
+<div class="section" id="httpserver-class">
+<h2>HTTPServer class<a class="headerlink" href="#httpserver-class" title="Permalink to this headline">¶</a></h2>
+<p>HTTPServer based on TCPServer, IOStream and IOLoop classes.
+This class is used by the <tt class="docutils literal"><span class="pre">turbo.web.Application</span></tt> class to serve its RequestHandlers.
+The server itself is only responsible for handling incoming requests, no
+response to the request is produced, that is the purpose of the request
+callback given as argument on initialization. The callback recieves the
+HTTPRequest class instance produced for the incoming request and can
+by data provided in that instance decide on how it want to respond to
+the client. The callback must produce a valid HTTP response header and
+optionally a response body and use the <tt class="docutils literal"><span class="pre">turbo.web.HTTPRequest:write</span></tt> method.
+The server supports SSL, HTTP/1.1 Keep-Alive and optionally HTTP/1.0
+Keep-Alive if the header field is specified.</p>
+<p>Only use this class if you wish to have full control of things. Otherwise use the
+wrapper <tt class="docutils literal"><span class="pre">turbo.web.Application</span></tt>!</p>
+<p>Example usage of HTTPServer:</p>
+<div class="highlight-lua"><div class="highlight"><pre><span class="kd">local</span> <span class="n">httpserver</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="s1">&#39;</span><span class="s">turbo.httpserver&#39;</span><span class="p">)</span>
+<span class="kd">local</span> <span class="n">ioloop</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="s1">&#39;</span><span class="s">turbo.ioloop&#39;</span><span class="p">)</span>
+<span class="kd">local</span> <span class="n">ioloop_instance</span> <span class="o">=</span> <span class="n">ioloop</span><span class="p">.</span><span class="n">instance</span><span class="p">()</span>
+
+<span class="k">function</span> <span class="nf">handle_request</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+    <span class="kd">local</span> <span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">You requested: &quot;</span> <span class="o">..</span> <span class="n">request</span><span class="p">.</span><span class="n">path</span>
+    <span class="n">request</span><span class="p">:</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="s">HTTP/1.1 200 OK</span><span class="se">\r\n</span><span class="s">Content-Length:&quot;</span> <span class="o">..</span> <span class="n">message</span><span class="p">:</span><span class="n">len</span><span class="p">()</span> <span class="o">..</span> <span class="s2">&quot;</span><span class="se">\r\n\r\n</span><span class="s">&quot;</span><span class="p">)</span>
+    <span class="n">request</span><span class="p">:</span><span class="n">write</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+    <span class="n">request</span><span class="p">:</span><span class="n">finish</span><span class="p">()</span>
+<span class="k">end</span>
+
+<span class="n">http_server</span> <span class="o">=</span> <span class="n">httpserver</span><span class="p">.</span><span class="n">HTTPServer</span><span class="p">:</span><span class="n">new</span><span class="p">(</span><span class="n">handle_request</span><span class="p">)</span>
+<span class="n">http_server</span><span class="p">:</span><span class="n">listen</span><span class="p">(</span><span class="mi">8888</span><span class="p">)</span>
+<span class="n">ioloop_instance</span><span class="p">:</span><span class="n">start</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="function">
+<dt id="HTTPServer">
+<tt class="descname">HTTPServer</tt><big>(</big><em>request_callback</em>, <em>no_keep_alive</em>, <em>io_loop</em>, <em>xheaders</em>, <em>kwargs</em><big>)</big><a class="headerlink" href="#HTTPServer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new HTTPServer class instance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>request_callback</strong> (<em>Function</em>) &#8211; Function to be called when requests are recieved by the server. The callback recieves the HTTPRequest class instance produced for the incoming request as first argument. See the HTTPRequest documentation.</li>
+<li><strong>no_keep_alive</strong> (<em>Boolean</em>) &#8211; If clients request to use Keep-Alive is to be ignored.</li>
+<li><strong>io_loop</strong> (<tt class="docutils literal"><span class="pre">turbo.ioloop.IOLoop</span></tt> class instance.) &#8211; The IOLoop instance you want to use, if not defined the global instance is used.</li>
+<li><strong>xheaders</strong> (<em>Boolean</em>) &#8211; Care about X-* header fields or not. If set to true the remote_ip attribute in self
+reflects the X-Real-Ip or X-Forwarded-For HTTP header value recieved.</li>
+<li><strong>kwars</strong> &#8211; Optional keyword arguments</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Available keyword arguments:</p>
+<ul>
+<li><p class="first"><tt class="docutils literal"><span class="pre">read_body</span></tt> - Automatically read, and parse any request body. Default is true. If set to false, the user must read the body from the connection himself. Not reading a body in the case of a keep-alive request may lead to undefined behaviour. The body should be read or connection closed.</p>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">max_header_size</span></tt> - The maximum amount of bytes a header can be. If exceeded, request is dropped.</p>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">max_body_size</span></tt> - The maxium amount of bytes a request body can be. If exceeded, request is dropped. HAS NO EFFECT IF read_body IS FALSE.</p>
+</li>
+<li><dl class="first docutils">
+<dt><tt class="docutils literal"><span class="pre">ssl_options</span></tt> :</dt>
+<dd><p class="first last"><tt class="docutils literal"><span class="pre">key_file</span></tt> - SSL key file if a SSL enabled server is wanted,
+<tt class="docutils literal"><span class="pre">cert_file</span></tt> - Certificate file.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd></dl>
+
+<p>General note regarding callbacks for all write methods: If you do writes before the previous callback has been called it is replaced with the new callback. If there is no callback defined in consequtive calls, the old callback is simply removed.</p>
+</div>
+<div class="section" id="httprequest-class">
+<h2>HTTPRequest class<a class="headerlink" href="#httprequest-class" title="Permalink to this headline">¶</a></h2>
+<p>Represents a HTTP request to the server.</p>
+<p>This class has some attributes that can be accessed:</p>
+<blockquote>
+<div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">method:</th><td class="field-body">(String) HTTP Request method. Also available in the <tt class="docutils literal"><span class="pre">headers</span></tt> attribute.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">version:</th><td class="field-body">(String) HTTP Version</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">uri:</th><td class="field-body">(String) Uniform Resource Identifier</td>
+</tr>
+<tr class="field-even field"><th class="field-name">path:</th><td class="field-body">(String) Request URL</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">headers:</th><td class="field-body"><tt class="docutils literal"><span class="pre">turbo.httputil.HTTPHeaders</span></tt> class instance of the request headers.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">body:</th><td class="field-body">(String) The raw payload of the request, if any.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">connection:</th><td class="field-body"><tt class="docutils literal"><span class="pre">turbo.httpserver.HTTPConection</span></tt> class instance for this request.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">files:</th><td class="field-body">(Table) Files sent, file name is key and contents is its value.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">host:</th><td class="field-body">(String) Host IP</td>
+</tr>
+<tr class="field-even field"><th class="field-name">arguments:</th><td class="field-body">(Table) Raw arguments table. The <tt class="docutils literal"><span class="pre">turbo.web.RequestHandler</span></tt> have convience methods for accessing these.</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<dl class="function">
+<dt>
+<tt class="descname">HTTPRequest:request_time()</tt></dt>
+<dd><p>Return the time used to handle the request or the time up to now if request not finished.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(Number) Milliseconds the request took to finish, or up until now if not yet completed.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">HTTPRequest:full_url()</tt></dt>
+<dd><p>Return the full URL that the user requested.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">String</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">HTTPRequest:write(chunk, callback, arg)</tt></dt>
+<dd><p>Writes a chunk of output to the stream.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>chunk</strong> (<em>String</em>) &#8211; Data chunk to write to underlying IOStream.</li>
+<li><strong>callback</strong> (<em>Function</em>) &#8211; Optional function called when buffer is fully flushed.</li>
+<li><strong>arg</strong> &#8211; Optional first argument for callback.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">HTTPRequest:write_buffer(buf, callback, arg)</tt></dt>
+<dd><p>Write the given <tt class="docutils literal"><span class="pre">turbo.structs.buffer</span></tt> to the underlying stream.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>buf</strong> (<tt class="docutils literal"><span class="pre">turbo.structs.buffer</span></tt> class instance) &#8211; The buffer to write to the stream.</li>
+<li><strong>callback</strong> (<em>Function</em>) &#8211; Optional function called when buffer is fully flushed</li>
+<li><strong>arg</strong> &#8211; Optional argument for callback. If arg is given then it will be the first argument for the callback.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">HTTPRequest:write_zero_copy(buf, callback, arg)</tt></dt>
+<dd><p>Write a Buffer class instance without copying it into the underlying IOStream&#8217;s internal
+buffer. Some considerations has to be done when using this. Any prior calls
+to HTTPConnection:write or HTTPConnection:write_buffer must have completed
+before this method can be used. The zero copy write must complete before any
+other writes may be done. Also the buffer class should not be modified
+while the write is being completed. Failure to follow these advice will lead
+to undefined behaviour.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>buf</strong> &#8211; Buffer class instance</li>
+<li><strong>callback</strong> (<em>Function</em>) &#8211; Optional function called when buffer is fully flushed</li>
+<li><strong>arg</strong> &#8211; Optional first argument for callback.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">HTTPConnection:finish()</tt></dt>
+<dd><p>Finishes request.</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">HTTPRequest:supports_http_1_1()</tt></dt>
+<dd><p>Returns true if requester supports HTTP 1.1</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Boolean</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="httpconnection-class">
+<h2>HTTPConnection class<a class="headerlink" href="#httpconnection-class" title="Permalink to this headline">¶</a></h2>
+<p>Represents a live connection to the server. Basically a helper class to
+HTTPServer. It uses the IOStream class&#8217;s callbacks to handle the different
+sections of a HTTP request.</p>
+<dl class="function">
+<dt>
+<tt class="descname">HTTPConnection:write(chunk, callback, arg)</tt></dt>
+<dd><p>Writes a chunk of output to the stream.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>chunk</strong> (<em>String</em>) &#8211; Data chunk to write to underlying IOStream.</li>
+<li><strong>callback</strong> (<em>Function</em>) &#8211; Optional function called when buffer is fully flushed.</li>
+<li><strong>arg</strong> &#8211; Optional first argument for callback.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">HTTPConnection:write_buffer(buf, callback, arg)</tt></dt>
+<dd><p>Write the given <tt class="docutils literal"><span class="pre">turbo.structs.buffer</span></tt> to the underlying stream.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>buf</strong> (<tt class="docutils literal"><span class="pre">turbo.structs.buffer</span></tt> class instance) &#8211; The buffer to write to the stream.</li>
+<li><strong>callback</strong> (<em>Function</em>) &#8211; Optional function called when buffer is fully flushed</li>
+<li><strong>arg</strong> &#8211; Optional argument for callback. If arg is given then it will be the first argument for the callback.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">HTTPConnection:write_zero_copy(buf, callback, arg)</tt></dt>
+<dd><p>Write a Buffer class instance without copying it into the underlying IOStream&#8217;s internal
+buffer. Some considerations has to be done when using this. Any prior calls
+to HTTPConnection:write or HTTPConnection:write_buffer must have completed
+before this method can be used. The zero copy write must complete before any
+other writes may be done. Also the buffer class should not be modified
+while the write is being completed. Failure to follow these advice will lead
+to undefined behaviour.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>buf</strong> &#8211; Buffer class instance</li>
+<li><strong>callback</strong> (<em>Function</em>) &#8211; Optional function called when buffer is fully flushed</li>
+<li><strong>arg</strong> &#8211; Optional first argument for callback.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">HTTPConnection:finish()</tt></dt>
+<dd><p>Finishes request.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="tcpserver.html" class="btn btn-neutral float-right" title="turbo.tcpserver – Callback based TCP socket Server">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="httputil.html" class="btn btn-neutral" title="turbo.httputil – Utilities for the HTTP protocol"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, John Abrahamsen.
+    </p>
+  </div>
+
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'2.0.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+  
+ 
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-45069639-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,598 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>turbo.structs – Data structures &mdash; Turbo.lua 2.0.0 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="Turbo.lua 2.0.0 documentation" href="index.html"/>
+        <link rel="next" title="turbo.hash – Cryptographic Hashes" href="hash.html"/>
+        <link rel="prev" title="turbo.tcpserver – Callback based TCP socket Server" href="tcpserver.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="index.html" class="fa fa-home"> Turbo.lua</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="get_started.html">Get Started With Turbo</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="get_started.html#installing-turbo">Installing Turbo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_started.html#hello-world">Hello World</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_started.html#request-parameters">Request parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_started.html#routes">Routes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_started.html#serving-static-files">Serving Static Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_started.html#json-output">JSON Output</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Asynchronous modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#example-module">Example module</a></li>
+</ul>
+</li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="apiref.html">Turbo.lua API Versioning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="apiref.html#preliminaries">Preliminaries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apiref.html#module-version">Module Version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="web.html">turbo.web &#8211; Core web framework</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="web.html#requesthandler-class">RequestHandler class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#httperror-class">HTTPError class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#staticfilehandler-class">StaticFileHandler class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#redirecthandler-class">RedirectHandler class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#application-class">Application class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#mustache-templating">Mustache Templating</a></li>
+<li class="toctree-l2"><a class="reference internal" href="web.html#mustache-templatehelper-class">Mustache.TemplateHelper class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="async.html">turbo.async &#8211; Asynchronous clients</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="async.html#utilities-for-coroutines">Utilities for coroutines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="async.html#httpclient-class">HTTPClient class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="async.html#httpresponse-class">HTTPResponse class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="websocket.html">turbo.websocket &#8211; WebSocket server and client</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="websocket.html#websocketstream-mixin">WebSocketStream mixin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="websocket.html#websockethandler-class">WebSocketHandler class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="websocket.html#websocketclient-class">WebSocketClient class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ioloop.html">turbo.ioloop &#8211; Main I/O Loop</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ioloop.html#ioloop-class">IOLoop class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="iostream.html">turbo.iostream &#8211; High-level asynchronous streaming sockets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="iostream.html#iostream-class">IOStream class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="iostream.html#ssliostream-class">SSLIOStream class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="httputil.html">turbo.httputil &#8211; Utilities for the HTTP protocol</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="httputil.html#httpparser-class">HTTPParser class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="httputil.html#httpheaders-class">HTTPHeaders class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="httputil.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="httpserver.html">turbo.httpserver &#8211; Callback based HTTP Server</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="httpserver.html#httpserver-class">HTTPServer class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="httpserver.html#httprequest-class">HTTPRequest class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="httpserver.html#httpconnection-class">HTTPConnection class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tcpserver.html">turbo.tcpserver &#8211; Callback based TCP socket Server</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tcpserver.html#tcpserver-class">TCPServer class</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">turbo.structs &#8211; Data structures</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#deque-double-ended-queue">deque, Double ended queue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#buffer-low-level-mutable-buffer">buffer, Low-level mutable buffer</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="hash.html">turbo.hash &#8211; Cryptographic Hashes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="hash.html#sha1-class">SHA1 class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="util.html">turbo.util Common utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="util.html#table-tools">Table tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="util.html#low-level">Low level</a></li>
+<li class="toctree-l2"><a class="reference internal" href="util.html#misc">Misc</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sockutil.html">turbo.sockutil &#8211; Socket utilites and helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="escape.html">turbo.escape &#8211; Escaping and JSON utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="escape.html#json-conversion">JSON conversion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="escape.html#escaping">Escaping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="escape.html#string-trimming">String trimming</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="log.html">turbo.log &#8211; Command-line log helper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="turbovisor.html">turbovisor &#8211; Application supervisor</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="turbovisor.html#options">Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turbovisor.html#examples">Examples</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">Turbo.lua</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>turbo.structs &#8211; Data structures</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="_sources/structs.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="turbo-structs-data-structures">
+<span id="structs"></span><h1>turbo.structs &#8211; Data structures<a class="headerlink" href="#turbo-structs-data-structures" title="Permalink to this headline">¶</a></h1>
+<p>Usefull data structures implemented using Lua and the LuaJIT FFI.</p>
+<div class="section" id="deque-double-ended-queue">
+<h2>deque, Double ended queue<a class="headerlink" href="#deque-double-ended-queue" title="Permalink to this headline">¶</a></h2>
+<p>A deque can insert items at both the beginning and then end in constant time, &#8220;O(1)&#8221;
+If you are going to insert things regurarly to the front it is wise to use this class instead of the
+standard Lua table. Keep in mind that inserting to the back is still slower than a Lua table.</p>
+<dl class="function">
+<dt id="deque">
+<tt class="descname">deque</tt><big>(</big><big>)</big><a class="headerlink" href="#deque" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new deque class instance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Deque class instance</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">deque:append(item)</tt></dt>
+<dd><p>Append elements to tail.</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">deque:appendleft(item)</tt></dt>
+<dd><p>Append element to head.</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">deque:peeklast()</tt></dt>
+<dd><p>Returns element at tail.</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">deque:peekfirst()</tt></dt>
+<dd><p>Returns element at front.</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">deque:pop()</tt></dt>
+<dd><p>Removes element at tail and returns it.</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">deque:popleft()</tt></dt>
+<dd><p>Removes element at head and returns it.</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">deque:not_empty()</tt></dt>
+<dd><p>Check if deque is empty.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Boolean</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">deque:size()</tt></dt>
+<dd><p>Returns the amount of elements in the deque.</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">deque:strlen()</tt></dt>
+<dd><p>Find length of all elements in deque combined.
+(Only works if the elements have a :len() method)</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">deque:concat()</tt></dt>
+<dd><p>Concat elements in deque. Only works if the elements in the deque have a :__concat() method.</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">deque:getn(pos)</tt></dt>
+<dd><p>Get element at position.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Element or nil if not existing.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="buffer-low-level-mutable-buffer">
+<h2>buffer, Low-level mutable buffer<a class="headerlink" href="#buffer-low-level-mutable-buffer" title="Permalink to this headline">¶</a></h2>
+<p>Can be used to replace plain Lua strings where it is of importance to not create temporary strings, and there
+is little help in the Lua string interning. It is mutable and allows preallocations to be done on intialization.
+The data stored in a buffer is not handled by the LuaJIT 2.0 GC which in turn circumvents the memory limit.</p>
+<p>Keep in mind that this class i &#8220;low-level&#8221; and giving the wrong arguments to its methods may cause memory segmentation fault.
+It is NOT protected.</p>
+<dl class="function">
+<dt id="Buffer">
+<tt class="descname">Buffer</tt><big>(</big><em>size_hint</em><big>)</big><a class="headerlink" href="#Buffer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new buffer. May raise error if there is not enough memory available.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>size_hint</strong> (<em>Number</em>) &#8211; The buffer is preallocated with this amount (in bytes) of storage.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">Buffer class instance.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">Buffer:append_right(data, len)</tt></dt>
+<dd><p>Append data to buffer.
+Keep in mind that defining a length longer than the actual data, might lead to a segmentation fault.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> (<em>char *</em>) &#8211; The data to append in char * form.</li>
+<li><strong>len</strong> (<em>Number</em>) &#8211; The length of the data in bytes.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">Buffer:append_luastr_right(str)</tt></dt>
+<dd><p>Append Lua string to buffer.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>str</strong> (<em>String</em>) &#8211; The data to append.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">Buffer:append_left(data, len)</tt></dt>
+<dd><p>Prepend data to buffer.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> (<em>char *</em>) &#8211; The data to prepend in char * form.</li>
+<li><strong>len</strong> (<em>Number</em>) &#8211; The length of the data in bytes.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">Buffer:append_luastr_left(str)</tt></dt>
+<dd><p>Prepend Lua string to the buffer.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>str</strong> (<em>String</em>) &#8211; The data to prepend.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">Buffer:pop_left(sz)</tt></dt>
+<dd><p>Pop bytes from left side of buffer. If sz exceeds size of buffer then a error is raised. Note: does not release memory allocated.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sz</strong> (<em>Number</em>) &#8211; Bytes to &#8220;pop&#8221;.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">Buffer:pop_right(sz)</tt></dt>
+<dd><p>Pop bytes from right side of the buffer. If sz exceeds size of buffer then a error is raised. Note: does not release memory allocated.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sz</strong> (<em>Number</em>) &#8211; Bytes to &#8220;pop&#8221;.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">Buffer:get()</tt></dt>
+<dd><p>Get internal buffer pointer. Must be treated as a const value. Keep in mind that the internal pointer may or may not
+change when calling its methods.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Two values: const char * to data and current size in bytes.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">Buffer:copy()</tt></dt>
+<dd><p>Create a &#8220;deep&#8221; copy of the buffer.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Buffer class instance</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">Buffer:shrink()</tt></dt>
+<dd><p>Shrink buffer memory (deallocate) usage to its minimum.</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">Buffer:clear(wipe)</tt></dt>
+<dd><p>Clear buffer. Note: does not release memory allocated.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>wipe</strong> (<em>Boolean</em>) &#8211; Optional switch to zero fill allocated memory range.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">Buffer:len()</tt></dt>
+<dd><p>Get current size of the buffer.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Number. Size in bytes.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">Buffer:mem()</tt></dt>
+<dd><p>Get the total number of bytes currently allocated to this instance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Number. Bytes allocated.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">Buffer:__tostring()</tt></dt>
+<dd><p>Convert to Lua type string using the tostring() builtin or implicit conversions.</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">Buffer:__eq(cmp)</tt></dt>
+<dd><p>Compare two buffers by using the == operator.</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">Buffer:__concat(src)</tt></dt>
+<dd><p>Concat by using the .. operator, Lua type strings can be concated also.
+Please note that all concatination involves deep copying and is slower than manually
+building a buffer with append methods.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="hash.html" class="btn btn-neutral float-right" title="turbo.hash – Cryptographic Hashes">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="tcpserver.html" class="btn btn-neutral" title="turbo.tcpserver – Callback based TCP socket Server"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, John Abrahamsen.
+    </p>
+  </div>
+
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'2.0.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+  
+ 
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-45069639-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+</body>
+</html>
