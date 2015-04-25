@@ -24,12 +24,12 @@ local app = turbo.web.Application({
     {"^/sponsor$",      TemplateRenderer,   "sponsor.mustache"},
     {"^/win$",          TemplateRenderer,   "windows.mustache"},
     -- End of templates.
-    {"^/doc/$",         SFH,                "./doc/index.html"},
-    {"^/doc/(.*)$",     SFH,                "./doc/"},
-    {"^/lib/(.*)$",     SFH,                "./lib/"},
-    {"^/assets/(.*)$",  SFH,                "./assets/"},
+    {"^/doc/",          turbo.web.RedirectHandler, "https://turbo.readthedocs.org/en/latest/index.html"},
+    {"^/doc",         	turbo.web.RedirectHandler, "https://turbo.readthedocs.org/en/latest/index.html"},
+    {"^/lib/(.*)$",     SFH, 			   "./lib/"},
+    {"^/assets/(.*)$",  SFH, 			   "./assets/"},
     -- Redirect to Get started guide.
-    {"^/gettingstarted$", turbo.web.RedirectHandler, "/doc/get_started.html"},
+    {"^/gettingstarted$", turbo.web.RedirectHandler, "https://turbo.readthedocs.org/en/latest/get_started.html"},
 })
 
 local srv = turbo.httpserver.HTTPServer(app)
